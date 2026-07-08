@@ -1,0 +1,22 @@
+import pandas as pd
+import json
+
+# Leer el archivo Excel
+df = pd.read_excel("datos.xlsx")
+
+# Crear la lista de objetos JSON
+resultado = []
+
+for _, fila in df.iterrows():
+    objeto = {
+        "cam1": fila["A"],
+        "cam2": fila["B"]
+    }
+
+    resultado.append(objeto)
+
+# Guardar en un archivo JSON
+with open("resultado.json", "w", encoding="utf-8") as archivo:
+    json.dump(resultado, archivo, indent=4, ensure_ascii=False)
+
+print("Archivo JSON generado correctamente.")
