@@ -1,7 +1,8 @@
 from sqlalchemy import Column, ForeignKey, Integer,String
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
-class Respuesta():
+Base=declarative_base()
+class Respuesta(Base):
     #esta tabla guarad las respuestas obtenidas por el sistema
     __tablesname__="COMRES"
     
