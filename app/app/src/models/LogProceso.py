@@ -1,6 +1,8 @@
 from sqlalchemy import Column, String,Integer, ForeignKey,Date
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
-class LogProcesso():
+Base=declarative_base()
+class LogProcesso(Base):
     __tablesname__:"COMLPE"
 
     Id_LogProceso=Column(Integer,primary_key=True,nullable=False)
