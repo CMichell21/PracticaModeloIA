@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
-class Servicio():
+Base=declarative_base()
+
+class Servicio(Base):
     #Teniendo en cuenta que se entran varios servicios
     #se agrega esta tabla para poder almacenar todos los servicios disponibles
     
