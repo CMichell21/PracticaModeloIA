@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Transformapi" company="" webLink="http://" view-date="2026-07-13" view-index="0" gantt-divider-location="705" resource-divider-location="300" version="3.3.3300" locale="es_ES">
+<?xml version="1.0" encoding="UTF-8"?><project name="Transformapi" company="" webLink="http://" view-date="2026-07-20" view-index="0" gantt-divider-location="610" resource-divider-location="300" version="3.3.3300" locale="es_ES">
     <description/>
     <view zooming-state="default:4" id="gantt-chart">
         <field id="tpd15" name="Notas" width="20" order="0"/>
-        <field id="tpd3" name="Nombre" width="372" order="0"/>
-        <field id="tpd4" name="Fecha de inicio" width="102" order="1"/>
-        <field id="tpd5" name="Fecha de fin" width="104" order="2"/>
-        <field id="tpd6" name="Duración" width="126" order="3"/>
+        <field id="tpd3" name="Nombre" width="314" order="0"/>
+        <field id="tpd4" name="Fecha de inicio" width="86" order="1"/>
+        <field id="tpd5" name="Fecha de fin" width="88" order="2"/>
+        <field id="tpd6" name="Duración" width="106" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
         <option id="filter.inProgressTodayTasks" value="false"/>
-        <option id="color.recent"><![CDATA[#339900 #ff6600 #ffcc00 #009900 #99ffff #33ffff #66ff66]]></option>
+        <option id="color.recent"><![CDATA[#66cc00 #66ff00 #339900 #ff6600 #ffcc00 #009900 #99ffff #33ffff #66ff66]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Nombre" width="210" order="0"/>
@@ -40,54 +40,55 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="17" uid="7bbed2d3611d4187a4e6daa8effe3860" name="Transformapi" color="#ff6600" meeting="false" start="2026-07-09" duration="35" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-            <task id="46" uid="de0e4ca2460447019c94b2144c105ede" name="ANALISIS Y ENTREGABLES" color="#339900" meeting="false" start="2026-07-09" duration="5" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
-                <task id="50" uid="a592b34936c3467ea428627d0f18eef5" name="Diagrama Entidad Relacion" meeting="false" start="2026-07-09" duration="5" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true"/>
-                <task id="48" uid="eb02903da7aa4071af70a4962463040a" name="Diagrama de clases" meeting="false" start="2026-07-09" duration="5" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true"/>
+        <task id="17" uid="7bbed2d3611d4187a4e6daa8effe3860" name="Transformapi" color="#ff6600" meeting="false" start="2026-07-09" duration="33" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
+            <task id="46" uid="de0e4ca2460447019c94b2144c105ede" name="ANALISIS Y DISEÑO" color="#339900" meeting="false" start="2026-07-09" duration="5" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
+                <task id="50" uid="a592b34936c3467ea428627d0f18eef5" name="Diagrama Entidad Relacion" meeting="false" start="2026-07-09" duration="5" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true">
+                    <depend id="48" type="1" difference="0" hardness="Strong"/>
+                </task>
+                <task id="48" uid="eb02903da7aa4071af70a4962463040a" name="Diagrama de clases" meeting="false" start="2026-07-09" duration="5" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true">
+                    <depend id="49" type="1" difference="0" hardness="Strong"/>
+                </task>
                 <task id="49" uid="7b9239a711de4f01ae22609a314b4feb" name="Diagrama de Gantt" meeting="false" start="2026-07-09" duration="5" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="18" uid="f337d1f6539c455dac6c359ad3c50651" name="BASE DE DATOS" color="#339900" meeting="false" start="2026-07-16" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
-                <depend id="19" type="2" difference="0" hardness="Strong"/>
-                <task id="22" uid="4a79e25090d146e5b54df3044cb56012" name="Investigacion del uso de DB2 y creacion de las tablas" meeting="false" start="2026-07-16" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true"/>
+            <task id="56" uid="d7a502947f1b41a498a8827fea66ca5d" name="DESARROLLO" color="#339900" meeting="false" start="2026-07-16" duration="21" complete="0" thirdDate="2026-07-16" thirdDate-constraint="0" expand="false">
+                <task id="18" uid="f337d1f6539c455dac6c359ad3c50651" name="BASE DE DATOS" color="#66cc00" meeting="false" start="2026-07-16" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
+                    <task id="22" uid="4a79e25090d146e5b54df3044cb56012" name="Investigacion del uso de DB2 y creacion de las tablas" meeting="false" start="2026-07-16" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true"/>
+                </task>
+                <task id="19" uid="ba5b4ef387e947718579c79a37331ea4" name="WEBSERVICE" color="#66cc00" meeting="false" start="2026-07-20" duration="19" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
+                    <depend id="33" type="2" difference="0" hardness="Strong"/>
+                    <task id="23" uid="e5e3106f1dc84223ae636f33dda1e375" name="Configuracion del entorno de desarrollo" meeting="false" start="2026-07-20" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
+                        <depend id="25" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="25" uid="39291d3a08fd4c82ac7d5d6aae4dcf28" name="Parametrizacion y conexion a la base de datos" meeting="false" start="2026-07-22" duration="3" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
+                        <depend id="26" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="26" uid="9a747a5f3faa40de895675136e4a0f94" name="Creacion de la Api e Integracion de fastapi con Uvicorn" meeting="false" start="2026-07-27" duration="3" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
+                        <depend id="53" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="53" uid="9bdd826514a640f8a964420a21e3e7f8" name="Primera prueba de dockerizacion" meeting="false" start="2026-07-30" duration="2" complete="0" thirdDate="2026-07-20" thirdDate-constraint="0" expand="true">
+                        <depend id="28" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="28" uid="51657c43dd824cd18859d5d9fe28820b" name="Integracion de seguridad" meeting="false" start="2026-08-03" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
+                        <depend id="32" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="32" uid="da27fe20cbe744709494f638e439858f" name="Integracion del modelo transformer" meeting="false" start="2026-08-05" duration="5" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
+                        <depend id="41" type="2" difference="0" hardness="Strong"/>
+                        <depend id="42" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="41" uid="96155ca3e3394e75aa2bc27f6bc533f7" name="Log de peticiones y respuestas" meeting="false" start="2026-08-12" duration="2" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true"/>
+                    <task id="42" uid="61edfc5327bc41cb8e16c382a54dd158" name="Log de procesos" meeting="false" start="2026-08-12" duration="2" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true"/>
+                </task>
             </task>
-            <task id="19" uid="ba5b4ef387e947718579c79a37331ea4" name="WEBSERVICE" color="#339900" meeting="false" start="2026-07-20" duration="21" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
-                <depend id="33" type="2" difference="0" hardness="Strong"/>
-                <task id="23" uid="e5e3106f1dc84223ae636f33dda1e375" name="Configuracion del entorno de desarrollo" meeting="false" start="2026-07-20" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-                    <depend id="25" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="25" uid="39291d3a08fd4c82ac7d5d6aae4dcf28" name="Parametrizacion y conexion a la base de datos" meeting="false" start="2026-07-22" duration="3" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-                    <depend id="26" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="26" uid="9a747a5f3faa40de895675136e4a0f94" name="Diseño estructural de la API e integracion con fastapi y uvicorn" meeting="false" start="2026-07-27" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-                    <depend id="29" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="29" uid="ce330164e8c7497b97f2b0970c444968" name="Modelado de objetos de base de datos" meeting="false" start="2026-07-29" duration="1" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-                    <depend id="31" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="31" uid="330bbf5a9a2e4bb192cccbd7a6a77a6b" name="Definicion del endpoint y validacion del json de peticion y respuesta" meeting="false" start="2026-07-30" duration="1" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-                    <depend id="53" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="53" uid="9bdd826514a640f8a964420a21e3e7f8" name="Primera prueba de dockerizacion" meeting="false" start="2026-07-31" duration="3" complete="0" thirdDate="2026-07-20" thirdDate-constraint="0" expand="true">
-                    <depend id="28" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="28" uid="51657c43dd824cd18859d5d9fe28820b" name="Integracion de seguridad" meeting="false" start="2026-08-05" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-                    <depend id="32" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="32" uid="da27fe20cbe744709494f638e439858f" name="Integracion del modelo transformer" meeting="false" start="2026-08-07" duration="5" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true">
-                    <depend id="41" type="2" difference="0" hardness="Strong"/>
-                    <depend id="42" type="2" difference="0" hardness="Strong"/>
-                </task>
-                <task id="41" uid="96155ca3e3394e75aa2bc27f6bc533f7" name="Log de peticiones y respuestas" meeting="false" start="2026-08-14" duration="2" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true"/>
-                <task id="42" uid="61edfc5327bc41cb8e16c382a54dd158" name="Log de procesos" meeting="false" start="2026-08-14" duration="2" complete="0" thirdDate="2026-07-13" thirdDate-constraint="0" expand="true"/>
-            </task>
-            <task id="33" uid="a44e5902616541af9b091a7bc77fe004" name="PRUEBAS" color="#009900" meeting="false" start="2026-08-18" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
+            <task id="33" uid="a44e5902616541af9b091a7bc77fe004" name="PRUEBAS" color="#009900" meeting="false" start="2026-08-14" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="false">
                 <depend id="36" type="2" difference="0" hardness="Strong"/>
-                <task id="38" uid="0e0ea45ae6064d9388be3214838e52bd" name="Pruebas de carga y estres" meeting="false" start="2026-08-18" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true"/>
+                <task id="55" uid="16a9920c6c8e4c9ab16b3f118fe8406c" name="Pruebas de implementacion" meeting="false" start="2026-08-14" duration="1" complete="0" thirdDate="2026-08-14" thirdDate-constraint="0" expand="true"/>
+                <task id="54" uid="3562d2870f3b4701ab6eb8ab583dda74" name="Pruebas Unitarias" meeting="false" start="2026-08-14" duration="1" complete="0" expand="true"/>
+                <task id="38" uid="0e0ea45ae6064d9388be3214838e52bd" name="Pruebas de carga y estres" meeting="false" start="2026-08-14" duration="2" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="36" uid="d01c302317f347a9bc75de15c43e3e6e" name="DOCUMENTACIÓN" color="#339900" meeting="false" start="2026-08-20" duration="5" complete="0" thirdDate="2026-07-31" thirdDate-constraint="0" expand="false">
-                <task id="37" uid="97cbf718e07d433e90790632977c8493" name="Manual Técnico" meeting="false" start="2026-08-20" duration="5" complete="0" thirdDate="2026-08-12" thirdDate-constraint="0" expand="true"/>
-                <task id="35" uid="a5b9465de39c49f982a1e8e1b419801e" name="Plan de trabajo" meeting="false" start="2026-08-20" duration="5" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true"/>
-                <task id="43" uid="46c99c2d8f5b478aaf6f136e62eb0f84" name="Pase de objetos" meeting="false" start="2026-08-20" duration="5" complete="0" thirdDate="2026-08-12" thirdDate-constraint="0" expand="true"/>
+            <task id="36" uid="d01c302317f347a9bc75de15c43e3e6e" name="DOCUMENTACIÓN" color="#339900" meeting="false" start="2026-08-18" duration="5" complete="0" thirdDate="2026-07-31" thirdDate-constraint="0" expand="false">
+                <task id="37" uid="97cbf718e07d433e90790632977c8493" name="Manual Técnico" meeting="false" start="2026-08-18" duration="5" complete="0" thirdDate="2026-08-12" thirdDate-constraint="0" expand="true"/>
+                <task id="35" uid="a5b9465de39c49f982a1e8e1b419801e" name="Plan de trabajo" meeting="false" start="2026-08-18" duration="5" complete="0" thirdDate="2026-07-09" thirdDate-constraint="0" expand="true"/>
+                <task id="43" uid="46c99c2d8f5b478aaf6f136e62eb0f84" name="Pase de objetos" meeting="false" start="2026-08-18" duration="5" complete="0" thirdDate="2026-08-12" thirdDate-constraint="0" expand="true"/>
             </task>
         </task>
     </tasks>
