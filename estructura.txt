@@ -1,0 +1,45 @@
+mi_sistema/
+	app/
+-	main.py                 # Punto de entrada FastAPI
+-	config.py               # Variables de entorno/configuración
+-	conexión
+    database.py             # Conexión a BD
+-	api/                    # Capa HTTP
+                    compara.py
+-	core/                   # Núcleo del sistema
+                   logger.py
+                   db_handler.py
+-	models/                 # Modelos de BD 
+                    peticion.py
+                    respuesta.py
+                    logs
+                         log_proceso.py
+                         log_petrespuesta.py
+-	 schemas/                # DTOs / validaciones Pydantic
+    peticion.py
+      respuesta.py
+-	services/               # Lógica de negocio
+                    compararservice.py
+-	repositories/           # Acceso a datos
+     peticionrepository.py
+     respuestarepository.py
+-	utils/
+    helpers.py
+	tests/
+	driver/
+-	.jar
+	requirements.txt
+	Dockerfile
+	docker-compose.yml
+	.env
+
+
+	Jaybedeapi: Permite conectar código python a base de datos mediante java jdbc, hace uso de la librería Jpyp, permite compatibilidad con DB-API es una especificación que define una interfaz estándar para acceder a bases de datos desde Python.
+
+	Jpype: Modulo de Python que proporciona acceso a java desde Python es un puente entre ambos lenguajes, esto lo logra conectando Python y java a nivel nativo mediante la interfaz nativa de java, para ser utilizada debe iniciar primero el java virtual Machine.
+
+Bibliografia
+https://jpype.readthedocs.io/en/latest/userguide.html#introduction 
+https://pypi.org/project/jpype1/ 
+https://peps.python.org/pep-0249/ 
+https://pypi.org/project/JayDeBeApi/
