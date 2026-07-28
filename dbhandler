@@ -1,0 +1,57 @@
+import logging
+from app.dbConexion import Conexion
+from app.repository.LogProcesoRepository import LogProcesoRepository
+from app.models.loggs.LogProceso import LogProceso
+from datetime import datetime
+
+
+class DBHandler(logging.Handler):
+
+    def emit(self, record):
+
+        conn = None
+        
+        fecha = datetime.fromtimestamp(record.created)
+
+        try:
+
+            conn = Conexion(registrar_log=False).obtenerConexion()
+
+            LogRepository = LogProcesoRepository(conn)
+
+            log = LogProceso(
+                id_log=None,
+                tipo_Log=record.levelname,
+                nombre=record.name,
+                usuario=getattr(record, "usuario", None),
+                clase=getattr(record, "clase", None),
+                metodo=getattr(record, "metodo", None),
+                mensaje=record.getMessage(),
+                detalle=getattr(record, "detalle", None),
+                fecha=fecha
+            )
+
+            LogRepository.insertar(log)
+
+        except Exception as e:
+
+            print("No se pudo guardar el log:", e)
+
+       
+
+from fastapi.exceptions import RequestValidationError
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+
+    logger = getLogger("Validacion")
+
+    logger.error(
+        "Error de validación",
+        extra={
+            "usuario": None,
+            "clase": "Peticion",
+            "metodo": "Validacion",
+            "detalle": str(exc.errors())
+        }
+    )
