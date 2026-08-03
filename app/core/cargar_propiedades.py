@@ -2,25 +2,41 @@ import os
 from dotenv import load_dotenv
 from app.core.logger import getLogger
 from app.core.logger import getLogger
+from app.core.except_personalizada import ErrorConexionBD
 
-class CargarPropiedades:
+class config:
 
     logger = getLogger()
     
     def __init__(self,file=".env"):
         load_dotenv(file)
 
+    DB_DRIVER= self.obtener_propiedades('NAME_CLASS')
+    URL= self.obtener_propiedades('URL')
+    DB_USER= self.obtener_propiedades('DB_USER')
+    DB_PASSWORD= self.obtener_propiedades('DB_PASSWORD')
+    DB_JAR= self.obtener_propiedades('ADDRES_DRIVER')
+    AMBIENTE=self.obtener_propiedades('AMBIENTE')
+
     def obtener_propiedades(self,parametro):
         
         value= os.getenv(parametro)
 
         if value is None or value.strip() == "":
-            self.logger.error(f"no se pudo obtener el parametro: {parametro}") 
-            raise ValueError(f"no se pudo obtner el parametro{parametro}")             
+            raise ErrorConexionBD(f"no se pudo obtener el parametro{parametro}")             
        
         return value.strip()
-
     
+    config=Config()
+    
+
+
+
+   
+    
+
+
+  
 
 
 
