@@ -39,15 +39,15 @@ mi_sistema/
 	Jpype: Modulo de Python que proporciona acceso a java desde Python es un puente entre ambos lenguajes, esto lo logra conectando Python y java a nivel nativo mediante la interfaz nativa de java, para ser utilizada debe iniciar primero el java virtual Machine.
 
 (env) PS C:\Users\ncarrillo\Documents\Transformapi> uvicorn app.main:app 
-INFO:     Started server process [14068]
+INFO:     Started server process [7812]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-2026-08-03 11:26:23,786 - app.core.logger - INFO - {'peticion': {'aplicacion': 'SISTEMA_CLIENTE_01', 'servicio': 1, 'usuario': 'juan_perez', 'terminal': 'TERM-WK-005', 'textoA': 'Este es un bloque de texto largo que representa la primera parte de la comparación que se enviará al sistema.', 'textoB': 'Este es el segundo bloque de texto largo que se utilizará para realizar la comparación contra el texto A.'}}
-2026-08-03 11:26:23,787 - app.core.logger - ERROR - No se pudo insertar el log no se pudo obtener la conexionno se pudo obtener el parametroDB_USER
-2026-08-03 11:26:23,787 - app.repository.log_proceso_repository - ERROR - No se pudo insertar el log:no se pudo obtener la conexionno se pudo obtener el parametroDB_USER
-2026-08-03 11:26:23,787 - app.core.logger - ERROR - no se pudo conectar a la base de datosno se pudo obtener la conexionno se pudo obtener el parametroDB_USER
-INFO:     127.0.0.1:62508 - "POST /transformapi/comparar HTTP/1.1" 500 Internal Server Error
+2026-08-03 11:51:18,480 - app.core.logger - INFO - {'peticion': {'aplicacion': 'SISTEMA_CLIENTE_01', 'servicio': 1, 'usuario': 'juan_perez', 'terminal': 'TERM-WK-005', 'textoA': 'Este es un bloque de texto largo que representa la primera parte de la comparación que se enviará al sistema.', 'textoB': 'Este es el segundo bloque de texto largo que se utilizará para realizar la comparación contra el texto A.'}}
+2026-08-03 11:51:18,481 - app.core.logger - ERROR - No se pudo insertar el log no se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
+2026-08-03 11:51:18,481 - app.repository.log_proceso_repository - ERROR - No se pudo insertar el log:no se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
+2026-08-03 11:51:18,481 - app.core.logger - ERROR - no se pudo conectar a la base de datosno se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
+INFO:     127.0.0.1:62988 - "POST /transformapi/comparar HTTP/1.1" 500 Internal Server Error
 ERROR:    Exception in ASGI application
 Traceback (most recent call last):
   File "C:\Users\ncarrillo\Documents\Transformapi\app\dbconexion\conexion.py", line 18, in Conectar
@@ -131,12 +131,5 @@ Traceback (most recent call last):
   File "C:\Users\ncarrillo\Documents\Transformapi\app\repository\log_peticion_repository.py", line 15, in insertar
     conn= self.conectar.Conectar()
   File "C:\Users\ncarrillo\Documents\Transformapi\app\dbconexion\conexion.py", line 35, in Conectar
-    raise ErrorConexionBD(f"no se pudo obtener la conexion{error}")
-app.core.except_personalizada.ErrorConexionBD: no se pudo obtener la conexionno se pudo obtener el parametroDB_USER
-
-
-Bibliografia
-https://jpype.readthedocs.io/en/latest/userguide.html#introduction 
-https://pypi.org/project/jpype1/ 
-https://peps.python.org/pep-0249/ 
-https://pypi.org/project/JayDeBeApi/
+    raise ErrorConexionBD(f"no se pudo obtener la conexion: {error}")
+app.core.except_personalizada.ErrorConexionBD: no se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
