@@ -7,7 +7,7 @@ from app.repository.log_peticion_repository import LogPeRepository
 from app.core.logger import getLogger
 from app.service.validar_entrada import ValidarEntrada
 from datetime import datetime, timezone
-from app.core.except_personalizada import ServicioNoDisponible, ErrorDatosDeEntrada
+from app.core.except_personalizada import ServicioNoDisponible, ErrorDatosDeEntrada, ErrorConexionBD
 import json
 import uuid
 
@@ -54,18 +54,25 @@ class CompararService:
                 )
             )
 
-            ## Mandamos a llamar a la clase encargada de hacer la validacion de los datos de entrada
+            
             peticion= self.validar_entrada.validar(datos_entrada,id_log)
             
-            ## Mandamos a llamar a la clase encargada de verificar si el servicio se encuantra disponible o no 
+        
             servicio=self.validar_servicio.validar(peticion.servicio,peticion.usuario,id_log)
             
-            ## Segun el servicio ese se va a mandar a llamar
+           
             if servicio == "comparar_texto":
                 self.logger.info("servicio encontrado exitosamente")
 
-            respuesta=json.dumps("procesamiento exitoso")
-            return servicio
+            respuesta_api={
+                "mensaje": "procesamiento exitoso"
+            }
+            respuesta=json.dumps(respuesta_api)
+            return respuesta_api
+        
+        except ErrorConexionBD as error:
+
+            raise
         
         except ErrorDatosDeEntrada as error:
             respuesta= f"{error.codigo}:{error.mensaje}"
