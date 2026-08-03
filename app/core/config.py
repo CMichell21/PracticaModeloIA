@@ -1,22 +1,20 @@
 import os
 from dotenv import load_dotenv
 from app.core.logger import getLogger
-from app.core.logger import getLogger
 from app.core.except_personalizada import ErrorConexionBD
 
-class config:
+class Config:
 
     logger = getLogger()
     
     def __init__(self,file=".env"):
         load_dotenv(file)
-
-    DB_DRIVER= self.obtener_propiedades('NAME_CLASS')
-    URL= self.obtener_propiedades('URL')
-    DB_USER= self.obtener_propiedades('DB_USER')
-    DB_PASSWORD= self.obtener_propiedades('DB_PASSWORD')
-    DB_JAR= self.obtener_propiedades('ADDRES_DRIVER')
-    AMBIENTE=self.obtener_propiedades('AMBIENTE')
+        self.DB_DRIVER= self.obtener_propiedades('NAME_CLASS')
+        self.URL= self.obtener_propiedades('URL')
+        self.DB_USER= self.obtener_propiedades('DB_USER')
+        self.DB_PASSWORD= self.obtener_propiedades('DB_PASSWORD')
+        self.DB_JAR= self.obtener_propiedades('ADDRES_DRIVER')
+        self.AMBIENTE=self.obtener_propiedades('AMBIENTE')
 
     def obtener_propiedades(self,parametro):
         
@@ -27,7 +25,17 @@ class config:
        
         return value.strip()
     
-    config=Config()
+
+config=Config()
+    
+
+
+
+   
+    
+
+
+  
     
 
 
