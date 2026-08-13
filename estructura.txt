@@ -1,41 +1,27 @@
-# ==========================================
-# ANALISIS DE DISTRIBUCION DE SIMILITUDES
-# ==========================================
+# Mostrar los textos de los casos F
+columnas_mostrar = [
+    "DESCRIPCION_INCOMMING",
+    "DESCRIPCION_BANCO",
+    "VALOR_ESPERADO"
+]
 
-df_analisis = pd.DataFrame({
-    "SIMILITUD": similarities,
-    "ESPERADO": df["VALOR_ESPERADO"]
-        .astype(str)
-        .str.strip()
-        .str.upper()
-})
+df_f = df[columnas_mostrar].copy()
 
-print("\n========================================")
-print("ESTADISTICAS DE SIMILITUD")
-print("========================================")
+df_f["SIMILITUD_COSENO"] = similarities
 
-print("\n--- CASOS T ---")
-print(
-    df_analisis[
-        df_analisis["ESPERADO"] == "T"
-    ]["SIMILITUD"].describe()
-)
-
-print("\n--- CASOS F ---")
-print(
-    df_analisis[
-        df_analisis["ESPERADO"] == "F"
-    ]["SIMILITUD"].describe()
-)
+df_f = df_f[
+    df_f["VALOR_ESPERADO"]
+    .astype(str)
+    .str.strip()
+    .str.upper() == "F"
+]
 
 print("\n========================================")
-print("LOS 9 CASOS F")
+print("DETALLE DE LOS CASOS F")
 print("========================================")
 
 print(
-    df_analisis[
-        df_analisis["ESPERADO"] == "F"
-    ].sort_values("SIMILITUD")
+    df_f.sort_values("SIMILITUD_COSENO").to_string(index=False)
 )
 
 print("========================================")
