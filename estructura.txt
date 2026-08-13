@@ -1,36 +1,104 @@
-df_prueba = pd.DataFrame({
-    "INCOMING": textos_incommin,
-    "BANCO": textos_banco,
-    "SIMILITUD": similarities,
-    "ESPERADO": df["VALOR_ESPERADO"]
-        .astype(str)
-        .str.strip()
-        .str.upper()
-})
+ 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 47/47 [00:04<00:00, 11.24it/s]
+Batches: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 47/47 [00:04<00:00, 11.49it/s]
 
-print("\n========================================")
-print("MUESTRA DE CASOS T")
-print("========================================")
+========================================
+MUESTRA DE CASOS T
+========================================
+                                INCOMING                                    BANCO  SIMILITUD
+LA RUTA                  Juticalpa, OlHN LA RUTA                  Juticalpa, OlHN        1.0
+PULPERIA FAMI DONDE DON RCORTES       HN PULPERIA FAMI DONDE DON RCORTES       HN        1.0
+CIRCLE K CK09            FRANCISCO MORHN CIRCLE K CK09            FRANCISCO MORHN        1.0
+CARNES DEL RANCHO        CORTES       HN CARNES DEL RANCHO        CORTES       HN        1.0
+DISTRITO 7               Tegucigalpa  HN DISTRITO 7               Tegucigalpa  HN        1.0
+VARIEDADES Y MAS VILLANUESan Pedro SulHN VARIEDADES Y MAS VILLANUESan Pedro SulHN        1.0
+VARIEDADES Y MAS VILLANUESan Pedro SulHN VARIEDADES Y MAS VILLANUESan Pedro SulHN        1.0
+VARIEDADES Y MAS VILLANUESan Pedro SulHN VARIEDADES Y MAS VILLANUESan Pedro SulHN        1.0
+INU BAR & PUB            EL PROGRESO  HN INU BAR & PUB            EL PROGRESO  HN        1.0
+TEXACO LOMAS             FRANCISCO MORHN TEXACO LOMAS             FRANCISCO MORHN        1.0
+BARUCH GRILL RESTAURANTE SIGUATEPEQUE HN BARUCH GRILL RESTAURANTE SIGUATEPEQUE HN        1.0
+ESTACION TOYOS           YORO         HN ESTACION TOYOS           YORO         HN        1.0
+GASOLINERA LAS ACACIAS   YOR          HN GASOLINERA LAS ACACIAS   YOR          HN        1.0
+LABORATORIOS MEDICOS RUBETegucigalpa  HN LABORATORIOS MEDICOS RUBETegucigalpa  HN        1.0
+TEXACO GUADALUPE 3/VI    SAN PEDRO SULHN TEXACO GUADALUPE 3/VI    SAN PEDRO SULHN        1.0
+gmurillo23 Kash          Visa Direct  HN gmurillo23 Kash          Visa Direct  HN        1.0
+B ABA REST DELICIAS CARMECOMAYAGUA    HN B ABA REST DELICIAS CARMECOMAYAGUA    HN        1.0
+RBAHN GASOLINERA UNO CHOLSan Pedro SulHN RBAHN GASOLINERA UNO CHOLSan Pedro SulHN        1.0
+LAB. BUESO ARIAS-AUTO SERSAN PEDRO SULHN LAB. BUESO ARIAS-AUTO SERSAN PEDRO SULHN        1.0
+ESPRESSO AMERICANO AUTOSETegucigalpa  HN ESPRESSO AMERICANO AUTOSETegucigalpa  HN        1.0
 
-print(
-    df_prueba[
-        df_prueba["ESPERADO"] == "T"
-    ][
-        ["INCOMING", "BANCO", "SIMILITUD"]
-    ].head(20).to_string(index=False)
-)
+Cantidad total de filas: 1496
 
-print("\nCantidad total de filas:", len(df))
+Distribución:
+VALOR_ESPERADO
+T    1487
+F       9
+Name: count, dtype: int64
 
-print("\nDistribución:")
-print(
-    df["VALOR_ESPERADO"]
-    .astype(str)
-    .str.strip()
-    .str.upper()
-    .value_counts()
-)
+Dimensiones embeddings:
+Incoming: torch.Size([1496, 384])
+Banco: torch.Size([1496, 384])
 
-print("\nDimensiones embeddings:")
-print("Incoming:", emb_incommin.shape)
-print("Banco:", emb_banco.shape)
+========================================
+ESTADISTICAS DE SIMILITUD
+========================================
+
+--- CASOS T ---
+count    1.487000e+03
+mean     1.000000e+00
+std      1.578920e-07
+min      9.999996e-01
+25%      9.999999e-01
+50%      1.000000e+00
+75%      1.000000e+00
+max      1.000000e+00
+Name: SIMILITUD, dtype: float64
+
+========================================
+DETALLE DE LOS CASOS F
+========================================
+                   DESCRIPCION_INCOMMING                          DESCRIPCION_BANCO VALOR_ESPERADO  SIMILITUD_COSENO
+CIRCLE K 16              FRANCISCO MORHN                          FRANCISCO MORAZAN              F          0.344499
+ESPRESSO A PLAZA MODERNA CORTES       HN                        TIDICOS DE LA COSTA              F          0.450147
+MEDIDENTN SPS            SAN PEDRO SULHN                              MEDIDENTN TGU              F          0.484700
+DESPENSA FAM PEDREGAL    Tegucigalpa  HN               DESPENSA FAMILIAR PEDREGAL                F          0.658883
+REPOSTERIA DELIPAN       FRANCISCO MORHN REPOSTERIA DELIPAN       FRANCISCO MORAZAN              F          0.778209
+TATYS TIENDA DE CONVENIENCOMAYAGUELA  HN               TATYS TIENDA DE CONVENIENCIA              F          0.855278
+PASTELERIA CASA DE PAN 2 CORTES       HN            PAGO DE PASTELERIA CASA DE PAN               F          0.858894
+ESTACION TEXACO GUADALUPAYORO         HN        ESTACION TEXACO GUADALUPA YORO - HN              F          0.938569
+LA ESQUINA               Tegucigalpa  HN                 LA ESQUINA Tegucigalpa  HN              F          1.000000
+========================================
+
+--- CASOS F ---
+count    9.000000
+mean     0.707687
+std      0.234177
+min      0.344499
+25%      0.484700
+50%      0.778209
+75%      0.858894
+max      1.000000
+Name: SIMILITUD, dtype: float64
+
+========================================
+LOS 9 CASOS F
+      SIMILITUD ESPERADO
+1403   0.344499        F
+92     0.450147        F
+93     0.484700        F
+141    0.658883        F
+64     0.778209        F
+1      0.855278        F
+37     0.858894        F
+1484   0.938569        F
+1442   1.000000        F
+Tiempo de procesamiento de embeddings: 8.34 segundos
+#####encontrar umbral########
+umbral: 0.0
+Accuracy: 0.994
+Precision:0.994
+Recall:1.0
+FI: 0.997
+###############################
+Procesamiento completado. Archivo guardado en: Salida\resultados_similitud_prueba_umbrales2.xlsx
+Tiempo total de ejecución: 9.42 segundos
+(env) PS C:\Users\ncarrillo\Documents\modeloia> 
