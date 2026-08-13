@@ -1,135 +1,41 @@
-mi_sistema/
-	app/
--	main.py                 # Punto de entrada FastAPI
--	config.py               # Variables de entorno/configuración
--	conexión
-    database.py             # Conexión a BD
--	api/                    # Capa HTTP
-                    compara.py
--	core/                   # Núcleo del sistema
-                   logger.py
-                   db_handler.py
--	models/                 # Modelos de BD 
-                    peticion.py
-                    respuesta.py
-                    logs
-                         log_proceso.py
-                         log_petrespuesta.py
--	 schemas/                # DTOs / validaciones Pydantic
-    peticion.py
-      respuesta.py
--	services/               # Lógica de negocio
-                    compararservice.py
--	repositories/           # Acceso a datos
-     peticionrepository.py
-     respuestarepository.py
--	utils/
-    helpers.py
-	tests/
-	driver/
--	.jar
-	requirements.txt
-	Dockerfile
-	docker-compose.yml
-	.env
+# ==========================================
+# ANALISIS DE DISTRIBUCION DE SIMILITUDES
+# ==========================================
 
+df_analisis = pd.DataFrame({
+    "SIMILITUD": similarities,
+    "ESPERADO": df["VALOR_ESPERADO"]
+        .astype(str)
+        .str.strip()
+        .str.upper()
+})
 
-	Jaybedeapi: Permite conectar código python a base de datos mediante java jdbc, hace uso de la librería Jpyp, permite compatibilidad con DB-API es una especificación que define una interfaz estándar para acceder a bases de datos desde Python.
+print("\n========================================")
+print("ESTADISTICAS DE SIMILITUD")
+print("========================================")
 
-	Jpype: Modulo de Python que proporciona acceso a java desde Python es un puente entre ambos lenguajes, esto lo logra conectando Python y java a nivel nativo mediante la interfaz nativa de java, para ser utilizada debe iniciar primero el java virtual Machine.
+print("\n--- CASOS T ---")
+print(
+    df_analisis[
+        df_analisis["ESPERADO"] == "T"
+    ]["SIMILITUD"].describe()
+)
 
-(env) PS C:\Users\ncarrillo\Documents\Transformapi> uvicorn app.main:app 
-INFO:     Started server process [7812]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-2026-08-03 11:51:18,480 - app.core.logger - INFO - {'peticion': {'aplicacion': 'SISTEMA_CLIENTE_01', 'servicio': 1, 'usuario': 'juan_perez', 'terminal': 'TERM-WK-005', 'textoA': 'Este es un bloque de texto largo que representa la primera parte de la comparación que se enviará al sistema.', 'textoB': 'Este es el segundo bloque de texto largo que se utilizará para realizar la comparación contra el texto A.'}}
-2026-08-03 11:51:18,481 - app.core.logger - ERROR - No se pudo insertar el log no se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
-2026-08-03 11:51:18,481 - app.repository.log_proceso_repository - ERROR - No se pudo insertar el log:no se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
-2026-08-03 11:51:18,481 - app.core.logger - ERROR - no se pudo conectar a la base de datosno se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
-INFO:     127.0.0.1:62988 - "POST /transformapi/comparar HTTP/1.1" 500 Internal Server Error
-ERROR:    Exception in ASGI application
-Traceback (most recent call last):
-  File "C:\Users\ncarrillo\Documents\Transformapi\app\dbconexion\conexion.py", line 18, in Conectar
-    user= self.propiedades.obtener_propiedades('DB_USER')
-  File "C:\Users\ncarrillo\Documents\Transformapi\app\core\cargar_propiedades.py", line 19, in obtener_propiedades
-    raise ErrorConexionBD(f"no se pudo obtener el parametro{parametro}")
-app.core.except_personalizada.ErrorConexionBD: no se pudo obtener el parametroDB_USER
+print("\n--- CASOS F ---")
+print(
+    df_analisis[
+        df_analisis["ESPERADO"] == "F"
+    ]["SIMILITUD"].describe()
+)
 
-During handling of the above exception, another exception occurred:
+print("\n========================================")
+print("LOS 9 CASOS F")
+print("========================================")
 
-Traceback (most recent call last):
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 416, in run_asgi
-    result = await app(  # type: ignore[func-returns-value]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        self.scope, self.receive, self.send
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 63, in __call__
-    return await self.app(scope, receive, send)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
-    await super().__call__(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\applications.py", line 90, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
-    raise exc
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
-    await self.app(scope, receive, _send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
-    await self.app(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\routing.py", line 660, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 2685, in app
-    await route.handle(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 1766, in handle
-    await self.original_router.handle(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 2740, in handle
-    await included_router._handle_selected(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 1786, in _handle_selected
-    await original_route.handle(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 1265, in handle
-    await app(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 151, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 137, in app
-    response = await f(request)
-               ^^^^^^^^^^^^^^^^
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 691, in app
-    raw_response = await run_endpoint_function(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "C:\Users\ncarrillo\Documents\Transformapi\env\Lib\site-packages\fastapi\routing.py", line 345, in run_endpoint_function
-    return await dependant.call(**values)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ncarrillo\Documents\Transformapi\app\api\comparar.py", line 12, in comparar
-    resultado= await orquestador.ejecutar_proceso(peticion)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ncarrillo\Documents\Transformapi\app\service\comparar_orquestador.py", line 35, in ejecutar_proceso
-    self.logpe_repository.insertar(
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
-        LogPeticionRespuesta(
-        ^^^^^^^^^^^^^^^^^^^^^
-    ...<5 lines>...
-        )
-        ^
-    )
-    ^
-  File "C:\Users\ncarrillo\Documents\Transformapi\app\repository\log_peticion_repository.py", line 15, in insertar
-    conn= self.conectar.Conectar()
-  File "C:\Users\ncarrillo\Documents\Transformapi\app\dbconexion\conexion.py", line 35, in Conectar
-    raise ErrorConexionBD(f"no se pudo obtener la conexion: {error}")
-app.core.except_personalizada.ErrorConexionBD: no se pudo obtener la conexion: no se pudo obtener el parametroDB_USER
+print(
+    df_analisis[
+        df_analisis["ESPERADO"] == "F"
+    ].sort_values("SIMILITUD")
+)
+
+print("========================================")
