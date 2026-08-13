@@ -1,24 +1,66 @@
-# Mostrar los textos de los casos F
-columnas_mostrar = [
-    "DESCRIPCION_INCOMMING",
-    "DESCRIPCION_BANCO",
-    "VALOR_ESPERADO"
-]
+Usando dispositivo: cpu
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights: 100%|█████████████████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 2426.96it/s]
+Calculando embeddings en cpu para 1496 registros...
+Batches: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 47/47 [00:05<00:00,  9.23it/s]
+Batches: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████| 47/47 [00:04<00:00, 11.11it/s]
 
-df_f = df[columnas_mostrar].copy()
+========================================
+ESTADISTICAS DE SIMILITUD
+========================================
 
-df_f["SIMILITUD_COSENO"] = similarities
+--- CASOS T ---
+count    1.487000e+03
+mean     1.000000e+00
+std      1.578920e-07
+min      9.999996e-01
+25%      9.999999e-01
+50%      1.000000e+00
+75%      1.000000e+00
+max      1.000000e+00
+Name: SIMILITUD, dtype: float64
 
-df_f = df_f[
-    df_f["VALOR_ESPERADO"]
-    .astype(str)
-    .str.strip()
-    .str.upper() == "F"
-]
+========================================
+DETALLE DE LOS CASOS F
+========================================
+                   DESCRIPCION_INCOMMING                          DESCRIPCION_BANCO VALOR_ESPERADO  SIMILITUD_COSENO
+CIRCLE K 16              FRANCISCO MORHN                          FRANCISCO MORAZAN              F          0.344499
+ESPRESSO A PLAZA MODERNA CORTES       HN                        TIDICOS DE LA COSTA              F          0.450147
+MEDIDENTN SPS            SAN PEDRO SULHN                              MEDIDENTN TGU              F          0.484700
+DESPENSA FAM PEDREGAL    Tegucigalpa  HN               DESPENSA FAMILIAR PEDREGAL                F          0.658883
+REPOSTERIA DELIPAN       FRANCISCO MORHN REPOSTERIA DELIPAN       FRANCISCO MORAZAN              F          0.778209
+TATYS TIENDA DE CONVENIENCOMAYAGUELA  HN               TATYS TIENDA DE CONVENIENCIA              F          0.855278
+PASTELERIA CASA DE PAN 2 CORTES       HN            PAGO DE PASTELERIA CASA DE PAN               F          0.858894
+ESTACION TEXACO GUADALUPAYORO         HN        ESTACION TEXACO GUADALUPA YORO - HN              F          0.938569
+LA ESQUINA               Tegucigalpa  HN                 LA ESQUINA Tegucigalpa  HN              F          1.000000
+========================================
 
-print("\n========================================")
-print("DETALLE DE LOS CASOS F")
-print("========================================")
+--- CASOS F ---
+count    9.000000
+mean     0.707687
+std      0.234177
+min      0.344499
+25%      0.484700
+50%      0.778209
+75%      0.858894
+max      1.000000
+Name: SIMILITUD, dtype: float64
+
+========================================
+LOS 9 CASOS F
+      SIMILITUD ESPERADO
+1403   0.344499        F
+92     0.450147        F
+93     0.484700        F
+141    0.658883        F
+64     0.778209        F
+1      0.855278        F
+37     0.858894        F
+1484   0.938569        F
+1442   1.000000        F
+Tiempo de procesamiento de embeddings: 9.43 segundos
+Error al procesar: [Errno 13] Permission denied: 'Salida\\analisis_umbrales1.xlsx'
+(env) PS C:\Users\ncarrillo\Documents\modeloia> 
 
 print(
     df_f.sort_values("SIMILITUD_COSENO").to_string(index=False)
