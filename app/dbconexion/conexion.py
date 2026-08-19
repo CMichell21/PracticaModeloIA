@@ -1,61 +1,22 @@
-import pymssql
-import time
-from app.core.logger import getLogger
-from app.core.excepciones.error_conexion_bd import ErrorConexionBD
+(.venv) PS C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi> python -m unittest test.dbconexion.test_conexion_sql
+E
+======================================================================
+ERROR: test_conectar (test.dbconexion.test_conexion_sql.TestConexionSql.test_conectar)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi\test\dbconexion\test_conexion_sql.py", line 17, in test_conectar
+    resultado=conexion.conectar(
+        server="localhost",
+    ...<5 lines>...
+        timeout=5
+    )
+TypeError: ConexionSql.conectar() got an unexpected keyword argument 'server'
 
-class ConexionSql:
+----------------------------------------------------------------------
+Ran 1 test in 0.002s
 
-    def __init__(self):
-        self.logger=getLogger(__name__)
-
-    def conectar(self, url_ip, port, usuario, password, db, time_conection, time_read):
-
-        tiempo_inicial=time.perf_counter()
-
-        try:
-            self.logger.info("obteniendo conexion de la base de datos")
-
-            conn= pymssql.connect(
-                server=url_ip,
-                port=port,
-                user=usuario,
-                password=password,
-                database=db,
-                login_timeout=time_conection,
-                timeout=time_read
-            )
-
-            self.logger.info("conexion exitosa")
-            
-            conexion=[conn,"conectar",self.__class__.__name__]
-            return conexion
-
-        except Exception as error:
-            self.logger.error(f"no se pudo obtener la conexion: {error}")
-                
-            raise ErrorConexionBD("012","No se pudo realizar la operación")
-
-        finally:
-
-            tiempo_final=time.perf_counter()
-            tiempo_total=tiempo_final-tiempo_inicial
-            self.logger.info(f"tiempo maximo de conexion esperado:{time_conection}, tiempo duracion:{tiempo_total} ")
-
-
-    
-    def desconectar(self, conn):
-
-        try:
-            if conn is not None:
-                conn.close()
-                self.logger.info("conexion cerrada exitosamente")
-
-        except Exception as error:
-
-            self.logger.error(f"no se pudo cerrar la conexion{error}")
-            
-    
-
+FAILED (errors=1)
+(.venv) PS C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi> 
     
 
 
