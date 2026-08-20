@@ -1,103 +1,82 @@
-﻿2026-08-20 09:01:42,917 - app.service.comparar_service - INFO - ############## FIN DEL PROCESO #####################
-INFO:     127.0.0.1:52271 - "POST /transformapi/comparar HTTP/1.1" 200 OK
-2026-08-20 09:09:48,434 - app.service.comparar_service - INFO - ############# INICIO DEL PROCESO ################
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,436 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,437 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,437 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,437 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,437 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:09:48,437 - app.dbconexion.conexion_sql - INFO - obteniendo conexion de la base de datos
-2026-08-20 09:09:48,450 - app.dbconexion.conexion_sql - INFO - conexion exitosa
-2026-08-20 09:09:48,450 - app.dbconexion.conexion_sql - INFO - tiempo maximo de conexion esperado:10.00, tiempo duracion:0.013218300067819655 
-2026-08-20 09:09:48,453 - app.repository.log_peticion_repository - INFO - log registrado correctamente
-2026-08-20 09:09:48,456 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:**** INICIO DEL PROCESO ****)
-2026-08-20 09:09:48,457 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Obtencion de parametros exitoso)
-2026-08-20 09:09:48,459 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Conexion a la base de datos exitosa)
-2026-08-20 09:09:48,459 - app.service.validar_entrada_service - INFO - Validando el json de entrada a la api
-2026-08-20 09:09:48,462 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Validando el json de entrada a la api)
-2026-08-20 09:09:48,462 - app.service.validar_entrada_service - INFO - datos de entrada validados
-2026-08-20 09:09:48,463 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Validacion de datos de entrada exitoso)
-2026-08-20 09:09:48,463 - app.service.validar_servicio_service - INFO - Validando servicio
-2026-08-20 09:09:48,464 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Validando servicio)
-2026-08-20 09:09:48,465 - app.service.validar_servicio_service - INFO - servicio verificado
-2026-08-20 09:09:48,466 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Servicio verificado exitosamente)
-2026-08-20 09:09:48,466 - app.service.analisis_similitud_service - INFO - Nancy Mendez
-2026-08-20 09:09:48,466 - app.service.analisis_similitud_service - INFO - Nancy Colindres
-2026-08-20 09:09:48,466 - app.modeloIA.modelo_ia - INFO - modelo ejecutandoce en dispositivo: cpu
-2026-08-20 09:09:48,466 - app.modeloIA.modelo_ia - INFO - calculando cantidad de tokens
-2026-08-20 09:09:48,467 - app.modeloIA.modelo_ia - INFO - limite de tokens del modelo 256
-2026-08-20 09:09:48,467 - app.modeloIA.modelo_ia - INFO - calculando cantidad de tokens
-2026-08-20 09:09:48,467 - app.modeloIA.modelo_ia - INFO - limite de tokens del modelo 256
-2026-08-20 09:09:48,468 - app.modeloIA.modelo_ia - INFO - Procesando los embenddings
-2026-08-20 09:09:48,494 - app.modeloIA.modelo_ia - INFO - procesamiento del modelo exitoso=(similitud:0.6921719312667847, tokens textoA:4, tokens textoB:6)
-2026-08-20 09:09:48,494 - app.modeloIA.modelo_ia - INFO - tiempo duracion:0.028121799929067492
-2026-08-20 09:09:48,495 - app.service.analisis_similitud_service - INFO - calculando la igualdad del modelo
-2026-08-20 09:09:48,495 - app.service.analisis_similitud_service - INFO - calculando sugerencia del modelo
-2026-08-20 09:09:48,495 - app.service.analisis_similitud_service - INFO - calculando el porcentaje
-2026-08-20 09:09:48,495 - app.service.analisis_similitud_service - INFO - resultados del modelo=(iguales:si,sugerencia:R),porcentaje:69
-2026-08-20 09:09:48,498 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Procesamiento del modelo comparardor de texto COMPLETADO resultados obtenidos= similitud calculada por el modelo:0.6921719312667847,cantidad tokens textoA:4,cantidad tokens textoB:6)
-2026-08-20 09:09:48,498 - app.service.validar_entrada_service - INFO - Validacion de respuesta api correcta
-2026-08-20 09:09:48,499 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:**** FIN DEL PROCESO ****)
-2026-08-20 09:09:48,501 - app.repository.log_peticion_repository - INFO - actualizacion de log peticion y respuesta exitoso
-2026-08-20 09:09:48,502 - app.dbconexion.conexion_sql - INFO - conexion cerrada exitosamente
-2026-08-20 09:09:48,502 - app.service.comparar_service - INFO - tiempo total de todo el procesamiento0.06828010000754148
-2026-08-20 09:09:48,502 - app.service.comparar_service - INFO - ############## FIN DEL PROCESO #####################
-INFO:     127.0.0.1:60861 - "POST /transformapi/comparar HTTP/1.1" 200 OK
-2026-08-20 09:10:59,480 - app.service.comparar_service - INFO - ############# INICIO DEL PROCESO ################
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,482 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,483 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,483 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,483 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,483 - app.core.logger - INFO - obteniendo parametros del archivo de propiedades
-2026-08-20 09:10:59,483 - app.dbconexion.conexion_sql - INFO - obteniendo conexion de la base de datos
-2026-08-20 09:10:59,515 - app.dbconexion.conexion_sql - INFO - conexion exitosa
-2026-08-20 09:10:59,515 - app.dbconexion.conexion_sql - INFO - tiempo maximo de conexion esperado:10.00, tiempo duracion:0.032455399981699884 
-2026-08-20 09:10:59,517 - app.repository.log_peticion_repository - INFO - log registrado correctamente
-2026-08-20 09:10:59,519 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:**** INICIO DEL PROCESO ****)
-2026-08-20 09:10:59,520 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Obtencion de parametros exitoso)
-2026-08-20 09:10:59,521 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Conexion a la base de datos exitosa)
-2026-08-20 09:10:59,522 - app.service.validar_entrada_service - INFO - Validando el json de entrada a la api
-2026-08-20 09:10:59,523 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Validando el json de entrada a la api)
-2026-08-20 09:10:59,523 - app.service.validar_entrada_service - INFO - datos de entrada validados
-2026-08-20 09:10:59,524 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Validacion de datos de entrada exitoso)
-2026-08-20 09:10:59,524 - app.service.validar_servicio_service - INFO - Validando servicio
-2026-08-20 09:10:59,525 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Validando servicio)
-2026-08-20 09:10:59,525 - app.service.validar_servicio_service - INFO - servicio verificado
-2026-08-20 09:10:59,527 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Servicio verificado exitosamente)
-2026-08-20 09:10:59,527 - app.service.analisis_similitud_service - INFO - Nancy Mendez
-2026-08-20 09:10:59,527 - app.service.analisis_similitud_service - INFO - Nancy Colindres
-2026-08-20 09:10:59,527 - app.modeloIA.modelo_ia - INFO - modelo ejecutandoce en dispositivo: cpu
-2026-08-20 09:10:59,527 - app.modeloIA.modelo_ia - INFO - calculando cantidad de tokens
-2026-08-20 09:10:59,528 - app.modeloIA.modelo_ia - INFO - limite de tokens del modelo 256
-2026-08-20 09:10:59,528 - app.modeloIA.modelo_ia - INFO - calculando cantidad de tokens
-2026-08-20 09:10:59,528 - app.modeloIA.modelo_ia - INFO - limite de tokens del modelo 256
-2026-08-20 09:10:59,528 - app.modeloIA.modelo_ia - INFO - Procesando los embenddings
-2026-08-20 09:10:59,548 - app.modeloIA.modelo_ia - INFO - procesamiento del modelo exitoso=(similitud:0.6921719312667847, tokens textoA:4, tokens textoB:6)
-2026-08-20 09:10:59,548 - app.modeloIA.modelo_ia - INFO - tiempo duracion:0.020839500008150935
-2026-08-20 09:10:59,548 - app.service.analisis_similitud_service - INFO - calculando la igualdad del modelo
-2026-08-20 09:10:59,548 - app.service.analisis_similitud_service - INFO - calculando sugerencia del modelo
-2026-08-20 09:10:59,549 - app.service.analisis_similitud_service - INFO - calculando el porcentaje
-2026-08-20 09:10:59,549 - app.service.analisis_similitud_service - INFO - resultados del modelo=(iguales:si,sugerencia:R),porcentaje:69
-2026-08-20 09:10:59,551 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:Procesamiento del modelo comparardor de texto COMPLETADO resultados obtenidos= similitud calculada por el modelo:0.6921719312667847,cantidad tokens textoA:4,cantidad tokens textoB:6)
-2026-08-20 09:10:59,552 - app.service.validar_entrada_service - INFO - Validacion de respuesta api correcta
-2026-08-20 09:10:59,553 - app.repository.log_proceso_repository - INFO - log registrado correctamente(mensaje:**** FIN DEL PROCESO ****)
-2026-08-20 09:10:59,555 - app.repository.log_peticion_repository - INFO - actualizacion de log peticion y respuesta exitoso
-2026-08-20 09:10:59,555 - app.dbconexion.conexion_sql - INFO - conexion cerrada exitosamente
-2026-08-20 09:10:59,556 - app.service.comparar_service - INFO - tiempo total de todo el procesamiento0.07570899999700487
-2026-08-20 09:10:59,556 - app.service.comparar_service - INFO - ############## FIN DEL PROCESO #####################
-INFO:     127.0.0.1:56520 - "POST /transformapi/comparar HTTP/1.1" 200 OK
+﻿import os
+from dotenv import load_dotenv
+from app.core.logger import getLogger
+from app.core.excepciones.error_conexion_bd import ErrorConexionBD
 
+class Config:
+
+    logger = getLogger()
+    
+    def __init__(self,file=".env"):
+        load_dotenv(file)
+
+        # --- datos conexion a la base de datos
+        #self.db_driver= self.obtener_propiedades('NAME_DRIVER') ##NOMBRE DEL DRIVER JDBC PARA DB2
+        self.url_ip= self.obtener_propiedades('URL_IP')
+        self.port=self.obtener_propiedades('PORT')
+        self.db_user= self.obtener_propiedades('DB_USER')
+        self.db_password= self.obtener_propiedades('DB_PASSWORD')
+        self.db=self.obtener_propiedades('DB') ## nombre de la base de datos SQL-SERVER
+        #self.db_jar= self.obtener_propiedades('ADDRES_DRIVER') ## ES LA RUTA DEL DRIVER JDBC PARA DB2
+        self.time_conection= self.obtener_propiedades('TIME_CONECTION')
+        self.time_read=self.obtener_propiedades('TIME_READ')
+
+        # --- parametros para realizar insert o consultas
+        self.schema=self.obtener_propiedades('SCHEMA')
+        self.marker_position=self.obtener_propiedades('MARKER_POSITION')
+
+        # --- Datos para el modelo de IA
+        self.umbral=self.obtener_propiedades('UMBRAL')
+        self.umbral1=self.obtener_propiedades('UMBRAL1')
+        self.umbral2=self.obtener_propiedades('UMBRAL2')
+
+    def obtener_propiedades(self,parametro):
+        
+        self.logger.info("obteniendo parametros del archivo de propiedades")
+        value= os.getenv(parametro)
+
+        if value is None or value.strip() == "":
+            self.logger.error(f"No se pudo obtener el parametro {parametro}")
+            raise ErrorConexionBD("011", "No se pudo realizar la operacion")             
+       
+        return value.strip()
+    
+from app.core.config import Config
+class CompararService:
+     
+    def __init__(self):
+            self.logger=getLogger(__name__)
+            #self.conectar=ConexionDb2()
+            self.conectar=ConexionSql()
+            self.validar_servicio= ValidarServicioService()
+            self.comparar=AnalisisSimilitudService()
+            self.log_repository=LogProcesoRepository()
+            self.logpe_repository=LogPeRepository()
+            self.validar_entrada=ValidarEntradaService()
+        
+
+    async def ejecutar_proceso(self, datos_entrada):
+
+        tiempo_inicial=time.perf_counter()
+ 
+        respuesta=None
+        parametros_db=None
+        conn= None
+        peticion=None
+        uuid_log=None
+
+        try:
+            self.logger.info("############# INICIO DEL PROCESO ################")
+            ############### PASO 1: OBTENER PARAMETROS DEL ARCHIVO DE PROPIEDADES ###############
+            parametros_db=Config()
+
+            ############### PASO 2: OBTENER CONEXION BASE DE DATOS #################
+            ##---CONEXION DB2
+
+            #conn=self.conectar.conectar(
+            #    parametros_db.db_driver,
+            #    parametros_db.url_ip,
+            #    parametros_db.db_user,
+            #    parametros_db.db_password,
+            #    parametros_db.db_jar,
+            #    parametros_db.time_con
