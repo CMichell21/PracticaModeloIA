@@ -1,51 +1,28 @@
-﻿import os
-from dotenv import load_dotenv
-from app.core.logger import getLogger
+﻿from app.core.config import Config
+#from app.dbconexion.conexion_db2 import ConexionDb2
+from app.dbconexion.conexion_sql import ConexionSql
+from app.service.validar_servicio_service import ValidarServicioService
+from app.repository.log_proceso_repository import LogProcesoRepository
+from app.repository.log_peticion_repository import LogPeRepository
+from app.models.log_proceso import LogProceso
+from app.models.log_peticion_respuesta import LogPeticionRespuesta
+from app.service.validar_entrada_service import ValidarEntradaService
+from app.service.analisis_similitud_service import AnalisisSimilitudService
+from app.core.excepciones.errores_validacion import ErroresValidación
 from app.core.excepciones.error_conexion_bd import ErrorConexionBD
+from app.core.excepciones.errores_modeloIA import ErroresModeloIA
+from app.core.logger import getLogger
+from datetime import datetime, timezone
+import json
+import uuid
+import time
+import traceback
 
-class Config:
-
-    logger = getLogger()
-    
-    def __init__(self,file=".env"):
-        load_dotenv(file)
-
-        # --- datos conexion a la base de datos
-        #self.db_driver= self.obtener_propiedades('NAME_DRIVER') ##NOMBRE DEL DRIVER JDBC PARA DB2
-        self.url_ip= self.obtener_propiedades('URL_IP')
-        self.port=self.obtener_propiedades('PORT')
-        self.db_user= self.obtener_propiedades('DB_USER')
-        self.db_password= self.obtener_propiedades('DB_PASSWORD')
-        self.db=self.obtener_propiedades('DB') ## nombre de la base de datos SQL-SERVER
-        #self.db_jar= self.obtener_propiedades('ADDRES_DRIVER') ## ES LA RUTA DEL DRIVER JDBC PARA DB2
-        self.time_conection= self.obtener_propiedades('TIME_CONECTION')
-        self.time_read=self.obtener_propiedades('TIME_READ')
-
-        # --- parametros para realizar insert o consultas
-        self.schema=self.obtener_propiedades('SCHEMA')
-        self.marker_position=self.obtener_propiedades('MARKER_POSITION')
-
-        # --- Datos para el modelo de IA
-        self.umbral=self.obtener_propiedades('UMBRAL')
-        self.umbral1=self.obtener_propiedades('UMBRAL1')
-        self.umbral2=self.obtener_propiedades('UMBRAL2')
-
-    def obtener_propiedades(self,parametro):
-        
-        self.logger.info("obteniendo parametros del archivo de propiedades")
-        value= os.getenv(parametro)
-
-        if value is None or value.strip() == "":
-            self.logger.error(f"No se pudo obtener el parametro {parametro}")
-            raise ErrorConexionBD("011", "No se pudo realizar la operacion")             
-       
-        return value.strip()
-    
-from app.core.config import Config
 class CompararService:
      
     def __init__(self):
             self.logger=getLogger(__name__)
+            self.config=Config()
             #self.conectar=ConexionDb2()
             self.conectar=ConexionSql()
             self.validar_servicio= ValidarServicioService()
@@ -60,7 +37,7 @@ class CompararService:
         tiempo_inicial=time.perf_counter()
  
         respuesta=None
-        parametros_db=None
+        parametros=None
         conn= None
         peticion=None
         uuid_log=None
@@ -68,15 +45,413 @@ class CompararService:
         try:
             self.logger.info("############# INICIO DEL PROCESO ################")
             ############### PASO 1: OBTENER PARAMETROS DEL ARCHIVO DE PROPIEDADES ###############
-            parametros_db=Config()
+            parametros=self.config.parametros()
 
             ############### PASO 2: OBTENER CONEXION BASE DE DATOS #################
             ##---CONEXION DB2
 
             #conn=self.conectar.conectar(
-            #    parametros_db.db_driver,
-            #    parametros_db.url_ip,
-            #    parametros_db.db_user,
-            #    parametros_db.db_password,
-            #    parametros_db.db_jar,
-            #    parametros_db.time_con
+            #    parametros["db_driver"],
+            #    parametros["url_ip"],
+            #    parametros["db_user"],
+            #    parametros["db_password"],
+            #    parametros["db_jar"],
+            #    parametros["time_conection"]
+            #)
+
+            ###---CONEXION SQL SERVER
+
+            conexion=self.conectar.conectar(
+                parametros["url_ip"],
+                parametros["port"],
+                parametros["db_user"],
+                parametros["db_password"],
+                parametros["db_name"],
+                parametros["time_conection"],
+                parametros["time_read"]
+            )
+            conn=conexion[0]
+
+            ## generar uuid para los logs de bitacora 
+            uuid_log=str(uuid.uuid4())
+
+
+            #PRIMEROS INSERT A LAS TABLAS DE BITACORA
+            ## transformamos el elemento de fastapi en un objeto dict de python
+            datos_entrada_dict=await datos_entrada.json()
+
+            ## convertimos el objeto dict en un string para poder registrarlo en la base de datos
+            pet_usuario=str(datos_entrada_dict)
+
+            ## calculamos la fecha de entrada de la peticion
+            fecha_peticion = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+            self.logpe_repository.insertar(
+                LogPeticionRespuesta(
+                    uuid_log,
+                    pet_usuario,
+                    "",
+                    fecha_peticion,
+                    fecha_peticion,
+                ), parametros["schema"], parametros["marker_position"], conn
+            )
+
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "**** INICIO DEL PROCESO ****",
+                    "",
+                    "ejecutar_proceso",
+                    self.__class__.__name__,
+                    "OK"
+                ), parametros["schema"], parametros["marker_position"], conn
+            )
+
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Obtencion de parametros realizada exitosamente",
+                    "",
+                    "obtener_parametros",
+                    "Config",
+                    "OK"
+                ), parametros["schema"], parametros["marker_position"], conn
+            )
+            
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Conexion a la base de datos establecida exitosamente",
+                    "",
+                    conexion[1],
+                    conexion[2],
+                    "OK"
+                ), parametros["schema"], parametros["marker_position"], conn
+            )
+
+            ################### PASO 3: VALIDACION DE ENTRADA ####################
+            self.log_repository.insertar(LogProceso(
+                uuid_log,
+                "INFO",
+                "Validando el json de entrada a la api",
+                "",
+                "validar",
+                "ValidarEntradaService",
+                "OK"
+                ), parametros["schema"], parametros["marker_position"], conn
+            )
+
+            peticion= self.validar_entrada.validar(
+                datos_entrada_dict,
+            )
+
+            self.log_repository.insertar(LogProceso(
+                uuid_log,
+                "INFO",
+                "Validacion del json de entrada realizada exitosamente",
+                peticion.usuario,
+                "validar",
+                "ValidarEntradaService",
+                "OK"
+                ), parametros["schema"], parametros["marker_position"], conn
+            )
+         
+            ################### PASO 4: VALIDACION DE SERVICIO ########################
+            self.log_repository.insertar(LogProceso(
+                uuid_log,
+                "INFO",
+                "Validando servicio",
+                peticion.usuario,
+                "validar",
+                "ValidarServicioService",
+                "OK"
+                ), parametros["schema"], parametros["marker_position"], conn
+            )
+
+            servicio=self.validar_servicio.validar(
+                peticion.servicio, 
+            )
+            
+            self.log_repository.insertar(LogProceso(
+                uuid_log,
+                "INFO",
+                "Servicio validado exitosamente",
+                peticion.usuario,
+                "validar",
+                "ValidarServicioService",
+                "OK"
+                ), parametros["schema"], parametros["marker_position"], conn
+            )   
+
+            ####################### PASO 5: EJECUTAR SERVICIO ########################
+            if servicio == "comparar_texto":
+                respuesta_modelo=self.comparar.comparar_textos(
+                                        peticion.textoA,
+                                        peticion.textoB,
+                                        parametros["umbral"],
+                                        parametros["umbral1"],
+                                        parametros["umbral2"],
+                                        uuid_log,peticion.usuario,parametros["schema"], 
+                                        parametros["marker_position"], 
+                                        conn
+                                        )
+           
+            ################### PASO 6: VALIDAR SALIDA DE LA API ####################
+            respuesta_api=self.validar_entrada.validar_respuesta(respuesta_modelo)
+
+            respuesta=str(respuesta_modelo)
+            return respuesta_api
+            #return respuesta_api.model_dump(exclude_none=True)
+        
+        except ErrorConexionBD as error:
+            raise
+        
+        except ErroresValidación as error:  ######### capturamos errores de validacion campos enviados por el usuario y disponibilidad del servicio
+            respuesta=str({"codigoMensaje":error.codigo,
+                       "descripcionMensaje": error.mensaje 
+                    })
+            self.logger.info(respuesta)
+
+            usuario=getattr(peticion,"usuario", None)
+
+            if peticion is None:
+                usuario="transformapi"
+
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    error.tipo_log,
+                    f"{error.codigo}: {error.mensaje}",
+                    usuario,
+                    error.metodo,
+                    error.clase,
+                    error.estado
+                ), parametros["schema"], parametros["marker_position"], conn
+            )           
+            raise
+        
+        except ErroresModeloIA as error:
+            respuesta=str({"codigoMensaje":error.codigo,
+                            "descripcionMensaje": error.mensaje})
+        
+                
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    error.tipo_log,
+                    error.mensaje,
+                    peticion.usuario,
+                    error.metodo,
+                    error.clase,
+                    error.estado
+            ), parametros["schema"], parametros["marker_position"], conn)
+
+            raise
+
+        except Exception as error: 
+
+            respuesta= str({"codigoMensaje":"018",
+                            "descripcionMensaje": error})
+            if conn is not None and uuid_log is not None:
+                self.log_repository.insertar(
+                    LogProceso(
+                        uuid_log,
+                        "ERROR",
+                        str(error),
+                        "transformapi",
+                        "ejecutar_proceso",
+                        self.__class__.__name__,
+                        "ERROR"
+                    ), parametros["schema"], parametros["marker_position"], conn
+                )
+
+            raise
+
+        finally:
+            if conn is not None:
+
+                self.log_repository.insertar(
+                    LogProceso(
+                        uuid_log,
+                        "INFO",
+                        "**** FIN DEL PROCESO ****",
+                        "",
+                        "ejecutar_proceso",
+                        self.__class__.__name__,
+                        "OK"
+                    ), parametros["schema"], parametros["marker_position"], conn
+                )
+
+                ## calculo de fecha respuesta al usuario
+                fecha_respuesta = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+
+                self.logpe_repository.actualizar(
+                    LogPeticionRespuesta(
+                        uuid_log,
+                        "",
+                        respuesta,
+                        fecha_respuesta,
+                        fecha_respuesta
+                    ), parametros["schema"], parametros["marker_position"], conn
+                )
+            
+            
+            self.conectar.desconectar(conn)
+
+            tiempo_final=time.perf_counter()
+            tiempo_total=tiempo_final - tiempo_inicial
+            self.logger.info(f"tiempo total de todo el procesamiento{tiempo_total}")
+            self.logger.info("############## FIN DEL PROCESO #####################")
+            
+         from app.modeloIA.modelo_ia import ModeloIa
+from app.core.logger import getLogger
+from app.repository.log_proceso_repository import LogProcesoRepository
+from app.models.log_proceso import LogProceso
+import re
+
+class AnalisisSimilitudService:
+
+    def __init__(self):
+        self.modelo= ModeloIa()
+        self.logger=getLogger(__name__)
+        self.log_repository=LogProcesoRepository()
+
+    def comparar_textos(self, texto1, texto2, umbral, 
+                        umbral1, umbral2, uuid_log, usuario, schema,marker_position, conn):
+
+        try:
+            ####################### PASO1 NORMALIZACION DE TEXTOS
+            textoA=self.limpieza_datos(texto1)
+            textoB=self.limpieza_datos(texto2)
+
+            ######################## PASO1 PROCESAMIENTO DEL MODELO ####################################
+            ## insert "INICIO DEL PROCESAMIENTO DEL MODELO" 
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Inicio del procesamiento del modelo",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+                )
+            #--- LLAMAMOS AL MODELO 
+            resultado= self.modelo.comparar(textoA, textoB)
+
+            #-- Insert "PROCESAMIENTO DEL MODELO COMPLETADO"
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    f"Procesamiento del modelo COMPLETADO, resultados(similitud:{resultado[0]}, Tokens textoA:{resultado[1]}, Tokens textoB:{resultado[2]})",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+                )
+
+            ##################### PASO2: CONSTRUCCIÓN DE LA RESPUESTA AL USUARIO #########################
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Generando respuesta para el usuario",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+            )
+            self.logger.info("Inicio de la construcción de respuesta al usuario")
+
+            #--- Calculo de igualdad
+            iguales=self.calcular_igualdad(resultado[0],umbral)
+            
+            #--- Calculo De Porcentaje
+            self.logger.info("calculando el porcentaje ...")
+            porcentaje=int(resultado[0]*100)
+
+            #--- Calculo de sugerencia
+            if umbral1 is not None and umbral2 is not None:
+                self.logger.info(f"umbrales {umbral1}, {umbral2}")
+                sugerencia=self.determinar_sugerencia(resultado[0],float(umbral1),float(umbral2))
+                respuesta_modelo={
+                    "codigoMensaje":"00",
+                    "descripcionMensaje": "Procesamiento exitoso",
+                    "iguales": iguales,
+                    "sugerencia": sugerencia,
+                    "similitud": porcentaje
+                }
+                return respuesta_modelo
+
+            respuesta_modelo={
+                "codigoMensaje":"00",
+                "descripcionMensaje": "Procesamiento exitoso",
+                "iguales": iguales,
+                "similitud": porcentaje
+            }
+
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Respuesta generada exitosamente",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+                )
+            self.logger.info("Respuesta generada exitosamente ")
+           
+            return respuesta_modelo
+
+        except Exception as error:
+            self.logger.error(error)
+            raise 
+
+    
+    def limpieza_datos(self, texto):
+
+        self.logger.info("realizando limpieza de datos ")
+
+        texto_limpio=re.sub(r'[\r\n\t]+',"", texto)
+        texto_limpio=" ".join(texto.split())
+
+        self.logger.info("limpieza de datos exitosa")
+
+        return texto_limpio
+    
+
+
+    def calcular_igualdad(self,resultado,umbral):
+
+        self.logger.info("Determinando igualdad de textos ...")
+        if resultado >= float(umbral):
+            iguales="si"     
+        else:
+            iguales="no"
+        
+        self.logger.info(f"Igualdad calculada:{iguales}")
+        return iguales
+        
+  
+
+    def determinar_sugerencia(self,resultado,umbral1,umbral2):
+        self.logger.info(f"Determinando sugerencia ...{resultado}, umbral1:{umbral1}, umbral2:{umbral2}")
+
+        similitud = round(resultado, 6)
+
+        if similitud <= umbral1:
+            sugerencia = "I"
+
+        elif similitud <= umbral2:
+            sugerencia = "R"
+
+        else:
+            sugerencia = "A"
+
+        self.logger.info(f"sugerencia calculada:{sugerencia}")
+        return sugerencia
