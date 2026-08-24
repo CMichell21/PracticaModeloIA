@@ -1,8 +1,34 @@
 (.venv) PS C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi> python -m unittest test.api.test_comparar.TestCompararEndpoint.test_comparar
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights: 100%|██████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 4576.90it/s]
-.
+Loading weights: 100%|██████████████████████████████████████████████████████████████████████████████████| 103/103 [00:00<00:00, 4836.31it/s]
+INGRESO AL  ENDPOINT
+F
+======================================================================
+FAIL: test_comparar (test.api.test_comparar.TestCompararEndpoint.test_comparar)
 ----------------------------------------------------------------------
-Ran 1 test in 0.021s
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 119, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 725, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\unittest\mock.py", line 1449, in patched
+    return await func(*newargs, **newkeywargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi\test\api\test_comparar.py", line 67, in test_comparar
+    self.assertEqual(
+    ~~~~~~~~~~~~~~~~^
+        resultado,
+        ^^^^^^^^^^
+        Respuesta
+        ^^^^^^^^^
+    )
+    ^
+AssertionError: {'codigoMensaje': '00', 'descripcionMensa[77 chars]: 87} != <class 'app.schemas.respuesta.Respuesta'>
 
-OK
+----------------------------------------------------------------------
+Ran 1 test in 0.018s
+
+FAILED (failures=1)
+(.venv) PS C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi> 
