@@ -196,3 +196,154 @@ finally:
 
         print()
         print("Conexión cerrada.")
+------------------------------------------------------------
+from app.modeloIA.modelo_ia import ModeloIa
+from app.core.logger import getLogger
+from app.repository.log_proceso_repository import LogProcesoRepository
+from app.models.log_proceso import LogProceso
+import re
+
+class AnalisisSimilitudService:
+
+    def __init__(self):
+        self.modelo= ModeloIa()
+        self.logger=getLogger(__name__)
+        self.log_repository=LogProcesoRepository()
+
+    def comparar_textos(self, texto1, texto2, umbral, 
+                        umbral1, umbral2, uuid_log, usuario, schema,marker_position, conn):
+
+        try:
+            ####################### PASO1 NORMALIZACION DE TEXTOS
+            textoA=self.limpieza_datos(texto1)
+            textoB=self.limpieza_datos(texto2)
+
+            ######################## PASO1 PROCESAMIENTO DEL MODELO ####################################
+            ## insert "INICIO DEL PROCESAMIENTO DEL MODELO" 
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Inicio del procesamiento del modelo",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+                )
+            #--- LLAMAMOS AL MODELO 
+            resultado= self.modelo.comparar(textoA, textoB)
+
+            #-- Insert "PROCESAMIENTO DEL MODELO COMPLETADO"
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    f"Procesamiento del modelo COMPLETADO, resultados(similitud:{resultado[0]}, Tokens textoA:{resultado[1]}, Tokens textoB:{resultado[2]})",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+                )
+
+            ##################### PASO2: CONSTRUCCIÓN DE LA RESPUESTA AL USUARIO #########################
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Generando respuesta para el usuario",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+            )
+            self.logger.info("Inicio de la construcción de respuesta al usuario")
+
+            #--- Calculo de igualdad
+            iguales=self.calcular_igualdad(resultado[0],umbral)
+            
+            #--- Calculo De Porcentaje
+            self.logger.info("calculando el porcentaje ...")
+            porcentaje=int(resultado[0]*100)
+
+            #--- Calculo de sugerencia
+            if umbral1 is not None and umbral2 is not None:
+
+                sugerencia=self.determinar_sugerencia(resultado[0],float(umbral1),float(umbral2))
+                respuesta_modelo={
+                    "codigoMensaje":"00",
+                    "descripcionMensaje": "Procesamiento exitoso",
+                    "iguales": iguales,
+                    "sugerencia": sugerencia,
+                    "similitud": porcentaje
+                }
+
+            else:
+
+                respuesta_modelo={
+                    "codigoMensaje":"00",
+                    "descripcionMensaje": "Procesamiento exitoso",
+                    "iguales": iguales,
+                    "similitud": porcentaje
+                }
+
+            self.log_repository.insertar(
+                LogProceso(
+                    uuid_log,
+                    "INFO",
+                    "Respuesta generada exitosamente",
+                    usuario,
+                    "comparar_textos",
+                    self.__class__.__name__,
+                    "OK"), schema, marker_position, conn
+                )
+            self.logger.info("Respuesta generada exitosamente ")
+           
+            return respuesta_modelo
+
+        except Exception as error:
+            self.logger.error(error)
+            raise 
+
+    
+    def limpieza_datos(self, texto):
+
+        self.logger.info("realizando limpieza de datos ")
+
+        texto_limpio=re.sub(r'[\r\n\t]+',"", texto)
+        texto_limpio=" ".join(texto.split())
+
+        self.logger.info("limpieza de datos exitosa")
+
+        return texto_limpio
+    
+
+
+    def calcular_igualdad(self,resultado,umbral):
+
+        self.logger.info("Determinando igualdad de textos ...")
+        if resultado >= float(umbral):
+            iguales="si"     
+        else:
+            iguales="no"
+        
+        self.logger.info(f"Igualdad calculada:{iguales}")
+        return iguales
+        
+  
+
+    def determinar_sugerencia(self,resultado,umbral1,umbral2):
+        self.logger.info(f"Determinando sugerencia ...")
+
+        similitud = round(resultado, 6)
+
+        if similitud <= umbral1:
+            sugerencia = "I"
+
+        elif similitud <= umbral2:
+            sugerencia = "R"
+
+        else:
+            sugerencia = "A"
+
+        self.logger.info(f"sugerencia calculada:{sugerencia}")
+        return sugerencia
