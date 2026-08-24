@@ -1,41 +1,49 @@
+import unittest
+from unittest.mock import AsyncMock, patch
 
-@router.post("/comparar", response_model=Respuesta,response_model_exclude_none=True)
-async def comparar (request: Request):
+from fastapi import Request
 
-    resultado= await orquestador.ejecutar_proceso(request)   
-
-    return resultado
+from app.api.comparar import comparar
 
 
-#import unittest
-#from fastapi.testclient import TestClient
-#from app.main import  app
-#
-#
-#class TestCompararEndpoint(unittest.TestCase): 
-#
-#    @classmethod
-#    def setUpClass(cls):
-#        cls.client=TestClient(app)
-#
-#    def test_comparar_exito(self):
-#        datos= {
-#            "peticion":{
-#                "aplicacion":"SISTEMA_PRUEBA",
-#                "servicio": 1,
-#                "usuario":"Prueba Test",
-#                "terminal":"TERM-WK-005",
-#                "textoA":"Primer texto para la primera prueba",
-#                "textoB": "segundo texto para la primera prueba"
-#            }
-#        }
-#
-#        respuesta=self.client.post(
-#            "/transformapi/comparar",
-#            json=datos
-#        )
-#
-#        self.assertEqual(respuesta.status_code, 200)
+class TestCompararEndpoint(unittest.IsolatedAsyncioTestCase):
+
+    @patch(
+        "app.api.comparar.orquestador.ejecutar_proceso",
+        new_callable=AsyncMock
+    )
+    async def test_comparar(self, mock_ejecutar):
+
+        resultado_esperado = {
+            "estado": "OK",
+            "mensaje": "Proceso ejecutado correctamente"
+        }
+
+        mock_ejecutar.return_value = resultado_esperado
+
+        request = Request({
+            "type": "http",
+            "method": "POST",
+            "path": "/comparar",
+            "headers": [],
+            "query_string": b"",
+            "server": ("testserver", 80),
+            "client": ("testclient", 50000),
+            "scheme": "http"
+        })
+
+        resultado = await comparar(request)
+
+        self.assertEqual(
+            resultado,
+            resultado_esperado
+        )
+
+        mock_ejecutar.assert_awaited_once_with(request)
+
+
+if __name__ == "__main__":
+    unittest.main()
 #
 #        cuerpo=respuesta.json
 #
