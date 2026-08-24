@@ -1,8 +1,198 @@
 
-SELECT UUID AS ID, FECHA, TIPO_LOG AS TIPO DE LOG, MENSAJE AS DESCRIPCION, USUARIO AS NOMBRE DE USUARIO, CLASE AS NOMBRE DE LA CLASE, ESTADO 
-FROM TRANSFORMAPI.TRALPR
-ORDER BY FECHA ASC
+import pymssql
+import pandas as pd
 
-SELECT UUID AS ID, PET_USUARIO AS PETICION DEL USUARIO, FECHA_PETICION AS FECHA DE LA PETICION, RES_API AS RESPUESTA DE LA API, FECHA_RESPUESTA AS FECHA RESPUESTA 
-FROM TRANSFORMAPI.TRALPE
+
+# ============================================================
+# CONFIGURACIÓN DE BASE DE DATOS
+# ============================================================
+
+SERVER = "localhost"
+PORT = 1433
+USUARIO = "usuario"
+PASSWORD = "password"
+DATABASE = "TRANSFORMAPI"
+
+
+# ============================================================
+# RANGO DE FECHAS DEL REPORTE
+# ============================================================
+
+FECHA_INICIO = "2026-08-01 00:00:00"
+FECHA_FIN = "2026-08-24 23:59:59"
+
+
+# ============================================================
+# ARCHIVO DE SALIDA
+# ============================================================
+
+ARCHIVO_SALIDA = "ClickReport_Pruebas.xlsx"
+
+
+# ============================================================
+# CONSULTA TRALPR
+# ============================================================
+
+SQL_TRALPR = """
+SELECT
+    UUID AS ID,
+    FECHA,
+    TIPO_LOG AS [TIPO DE LOG],
+    MENSAJE AS DESCRIPCION,
+    USUARIO AS [NOMBRE DE USUARIO],
+    CLASE AS [NOMBRE DE LA CLASE],
+    ESTADO
+FROM TRANSFORMAPI.TRALPR
+WHERE FECHA >= %s
+  AND FECHA <= %s
 ORDER BY FECHA ASC
+"""
+
+
+# ============================================================
+# CONSULTA TRALPE
+# ============================================================
+
+SQL_TRALPE = """
+SELECT
+    UUID AS ID,
+    PET_USUARIO AS [PETICION DEL USUARIO],
+    FECHA_PETICION AS [FECHA DE LA PETICION],
+    RES_API AS [RESPUESTA DE LA API],
+    FECHA_RESPUESTA AS [FECHA RESPUESTA]
+FROM TRANSFORMAPI.TRALPE
+WHERE FECHA_PETICION >= %s
+  AND FECHA_PETICION <= %s
+ORDER BY FECHA_PETICION ASC
+"""
+
+
+# ============================================================
+# CONEXIÓN
+# ============================================================
+
+conexion = None
+
+try:
+
+    print("=" * 60)
+    print("GENERANDO CLICK REPORT")
+    print("=" * 60)
+
+    print(f"Fecha inicio : {FECHA_INICIO}")
+    print(f"Fecha fin    : {FECHA_FIN}")
+    print()
+
+    print("Conectando a la base de datos...")
+
+    conexion = pymssql.connect(
+        server=SERVER,
+        port=PORT,
+        user=USUARIO,
+        password=PASSWORD,
+        database=DATABASE
+    )
+
+    print("Conexión exitosa.")
+    print()
+
+
+    # ========================================================
+    # OBTENER LOGS TRALPR
+    # ========================================================
+
+    print("Consultando tabla TRALPR...")
+
+    df_tralpr = pd.read_sql(
+        SQL_TRALPR,
+        conexion,
+        params=(
+            FECHA_INICIO,
+            FECHA_FIN
+        )
+    )
+
+    print(
+        f"Registros encontrados en TRALPR: "
+        f"{len(df_tralpr)}"
+    )
+
+
+    # ========================================================
+    # OBTENER PETICIONES TRALPE
+    # ========================================================
+
+    print("Consultando tabla TRALPE...")
+
+    df_tralpe = pd.read_sql(
+        SQL_TRALPE,
+        conexion,
+        params=(
+            FECHA_INICIO,
+            FECHA_FIN
+        )
+    )
+
+    print(
+        f"Registros encontrados en TRALPE: "
+        f"{len(df_tralpe)}"
+    )
+
+
+    # ========================================================
+    # GENERAR EXCEL
+    # ========================================================
+
+    print()
+    print("Generando archivo Excel...")
+
+    with pd.ExcelWriter(
+        ARCHIVO_SALIDA,
+        engine="openpyxl"
+    ) as writer:
+
+        df_tralpr.to_excel(
+            writer,
+            sheet_name="LOGS",
+            index=False
+        )
+
+        df_tralpe.to_excel(
+            writer,
+            sheet_name="PETICIONES_API",
+            index=False
+        )
+
+
+    # ========================================================
+    # RESULTADO
+    # ========================================================
+
+    print()
+    print("=" * 60)
+    print("CLICK REPORT GENERADO CORRECTAMENTE")
+    print("=" * 60)
+
+    print(f"Archivo: {ARCHIVO_SALIDA}")
+    print(f"Logs: {len(df_tralpr)}")
+    print(f"Peticiones API: {len(df_tralpe)}")
+    print("=" * 60)
+
+
+except Exception as error:
+
+    print()
+    print("=" * 60)
+    print("ERROR AL GENERAR CLICK REPORT")
+    print("=" * 60)
+
+    print(error)
+
+finally:
+
+    if conexion is not None:
+
+        conexion.close()
+
+        print()
+        print("Conexión cerrada.")
