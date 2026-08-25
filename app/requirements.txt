@@ -1,24 +1,23 @@
-FROM python:3.13-slim
+import os
+import zipfile
 
-WORKDIR /app
+carpeta = "app"
 
-# Dependencias
-COPY requirements.txt .
+with zipfile.ZipFile("transformapi-pyc.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
 
-RUN pip install --no-cache-dir -r requirements.txt
+    for raiz, directorios, archivos in os.walk(carpeta):
+        for archivo in archivos:
 
-# Artefacto compilado
-COPY transformapi-pyc.zip .
+            if archivo.endswith(".pyc"):
 
-# Descomprimir el artefacto
-RUN python -c "import zipfile; zipfile.ZipFile('transformapi-pyc.zip').extractall('.')"
+                ruta_completa = os.path.join(raiz, archivo)
 
-# Eliminar ZIP
-RUN rm transformapi-pyc.zip
+                ruta_zip = os.path.relpath(
+                    ruta_completa,
+                    "."
+                ).replace(os.sep, "/")
 
-EXPOSE 8000
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+                zipf.write(ruta_completa, ruta_zip)
 
 --------------------------------------
 
