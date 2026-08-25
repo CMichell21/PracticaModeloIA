@@ -1,4 +1,25 @@
-python -c "import shutil; shutil.make_archive('dist/transformapi-pyc', 'zip', 'dist/pyc')"
+from pathlib import Path
+import zipfile
+
+ORIGEN = Path("dist/pyc")
+DESTINO = Path("dist/transformapi-pyc.zip")
+
+with zipfile.ZipFile(DESTINO, "w", zipfile.ZIP_DEFLATED) as zip_file:
+
+    for archivo in ORIGEN.rglob("*.pyc"):
+
+        ruta_relativa = archivo.relative_to(ORIGEN)
+
+        # Convertir la ruta de Windows a una ruta compatible con ZIP/Linux
+        ruta_zip = ruta_relativa.as_posix()
+
+        zip_file.write(
+            archivo,
+            ruta_zip
+        )
+
+print(f"ZIP generado correctamente: {DESTINO}")
+
 --------------------------------------
 
 [build-system]
