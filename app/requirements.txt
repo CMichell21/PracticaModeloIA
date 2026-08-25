@@ -1,17 +1,27 @@
 
-(.venv) PS C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi\dist\pyc> python -c "from app.main import app; print(app)"
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights: 100%|███████████████████| 103/103 [00:00<00:00, 5095.40it/s]
-<fastapi.applications.FastAPI object at 0x000002496E5CBE00>
-(.venv) PS C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi\dist\pyc> python -c "from app.main import app; print(app.main.__file__)"
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights: 100%|███████████████████| 103/103 [00:00<00:00, 4495.50it/s]
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-    from app.main import app; print(app.main.__file__)
-                                    ^^^^^^^^
-AttributeError: 'FastAPI' object has no attribute 'main'
-(.venv) PS C:\Users\ncarrillo\OneDrive - FICENSA\Documents\Transformapi\dist\pyc> 
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Dependencias
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Artefacto compilado
+COPY dist/transformapi-pyc.zip .
+
+# Descomprimir aplicación compilada
+RUN apt-get update \
+    && apt-get install -y unzip \
+    && unzip transformapi-pyc.zip \
+    && rm transformapi-pyc.zip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 
 ------------------------------------------------------------
