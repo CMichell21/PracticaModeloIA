@@ -1,23 +1,116 @@
 import os
+import shutil
 import zipfile
+import compileall
 
-carpeta = "app"
 
-with zipfile.ZipFile("transformapi-pyc.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
+ORIGEN = "app"
+BUILD = "build"
+ZIP = "transformapi-pyc.zip"
 
-    for raiz, directorios, archivos in os.walk(carpeta):
+
+# -----------------------------------------
+# 1. Limpiar build anterior
+# -----------------------------------------
+
+if os.path.exists(BUILD):
+    shutil.rmtree(BUILD)
+
+os.makedirs(BUILD)
+
+
+# -----------------------------------------
+# 2. Copiar estructura de la aplicación
+# -----------------------------------------
+
+shutil.copytree(
+    ORIGEN,
+    os.path.join(BUILD, "app")
+)
+
+
+# -----------------------------------------
+# 3. Compilar Python -> PYC
+# -----------------------------------------
+
+compileall.compile_dir(
+    os.path.join(BUILD, "app"),
+    force=True,
+    quiet=1
+)
+
+
+# -----------------------------------------
+# 4. Eliminar todos los .py
+# -----------------------------------------
+
+for raiz, directorios, archivos in os.walk(
+    os.path.join(BUILD, "app")
+):
+
+    for archivo in archivos:
+
+        if archivo.endswith(".py"):
+
+            ruta = os.path.join(raiz, archivo)
+
+            os.remove(ruta)
+
+
+# -----------------------------------------
+# 5. Crear ZIP correctamente
+# -----------------------------------------
+
+if os.path.exists(ZIP):
+    os.remove(ZIP)
+
+
+with zipfile.ZipFile(
+    ZIP,
+    "w",
+    zipfile.ZIP_DEFLATED
+) as zipf:
+
+    for raiz, directorios, archivos in os.walk(BUILD):
+
         for archivo in archivos:
 
-            if archivo.endswith(".pyc"):
+            ruta_completa = os.path.join(
+                raiz,
+                archivo
+            )
 
-                ruta_completa = os.path.join(raiz, archivo)
+            ruta_zip = os.path.relpath(
+                ruta_completa,
+                BUILD
+            ).replace(os.sep, "/")
 
-                ruta_zip = os.path.relpath(
-                    ruta_completa,
-                    "."
-                ).replace(os.sep, "/")
+            zipf.write(
+                ruta_completa,
+                ruta_zip
+            )
 
-                zipf.write(ruta_completa, ruta_zip)
+
+# -----------------------------------------
+# 6. Limpiar build
+# -----------------------------------------
+
+shutil.rmtree(BUILD)
+
+print(f"ZIP generado correctamente: {ZIP}")
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --------------------------------------
 
