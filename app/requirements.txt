@@ -1,299 +1,52 @@
-import os
-import shutil
-import zipfile
-import compileall
-
-
-ORIGEN = "app"
-BUILD = "build"
-ZIP = "transformapi-pyc.zip"
-
-
-# -----------------------------------------
-# 1. Limpiar build anterior
-# -----------------------------------------
-
-if os.path.exists(BUILD):
-    shutil.rmtree(BUILD)
-
-os.makedirs(BUILD)
-
-
-# -----------------------------------------
-# 2. Copiar estructura de la aplicación
-# -----------------------------------------
-
-shutil.copytree(
-    ORIGEN,
-    os.path.join(BUILD, "app")
-)
-
-
-# -----------------------------------------
-# 3. Compilar Python -> PYC
-# -----------------------------------------
-
-compileall.compile_dir(
-    os.path.join(BUILD, "app"),
-    force=True,
-    quiet=1
-)
-
-
-# -----------------------------------------
-# 4. Eliminar todos los .py
-# -----------------------------------------
-
-for raiz, directorios, archivos in os.walk(
-    os.path.join(BUILD, "app")
-):
-
-    for archivo in archivos:
-
-        if archivo.endswith(".py"):
-
-            ruta = os.path.join(raiz, archivo)
-
-            os.remove(ruta)
-
-
-# -----------------------------------------
-# 5. Crear ZIP correctamente
-# -----------------------------------------
-
-if os.path.exists(ZIP):
-    os.remove(ZIP)
-
-
-with zipfile.ZipFile(
-    ZIP,
-    "w",
-    zipfile.ZIP_DEFLATED
-) as zipf:
-
-    for raiz, directorios, archivos in os.walk(BUILD):
-
-        for archivo in archivos:
-
-            ruta_completa = os.path.join(
-                raiz,
-                archivo
-            )
-
-            ruta_zip = os.path.relpath(
-                ruta_completa,
-                BUILD
-            ).replace(os.sep, "/")
-
-            zipf.write(
-                ruta_completa,
-                ruta_zip
-            )
-
-
-# -----------------------------------------
-# 6. Limpiar build
-# -----------------------------------------
-
-shutil.rmtree(BUILD)
-
-print(f"ZIP generado correctamente: {ZIP}")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---------------------------------------
-
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "transformapi"
-version = "1.0.0"
-description = "API Transformapi"
-requires-python = ">=3.13"
-
-[tool.setuptools.packages.find]
-include = ["app*"]
-------------------------------------------------------------
-FROM python:3.13-slim
-
-WORKDIR /app
-
-# Instalar dependencias
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copiar paquete Python
-COPY transformapi-1.0.0-py3-none-any.whl .
-
-# Instalar nuestra aplicación
-RUN pip install --no-cache-dir transformapi-1.0.0-py3-none-any.whl
-
-EXPOSE 8000
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-
-------------------------------------------------------------
-from app.modeloIA.modelo_ia import ModeloIa
-from app.core.logger import getLogger
-from app.repository.log_proceso_repository import LogProcesoRepository
-from app.models.log_proceso import LogProceso
-import re
-
-class AnalisisSimilitudService:
-
-    def __init__(self):
-        self.modelo= ModeloIa()
-        self.logger=getLogger(__name__)
-        self.log_repository=LogProcesoRepository()
-
-    def comparar_textos(self, texto1, texto2, umbral, 
-                        umbral1, umbral2, uuid_log, usuario, schema,marker_position, conn):
-
-        try:
-            ####################### PASO1 NORMALIZACION DE TEXTOS
-            textoA=self.limpieza_datos(texto1)
-            textoB=self.limpieza_datos(texto2)
-
-            ######################## PASO1 PROCESAMIENTO DEL MODELO ####################################
-            ## insert "INICIO DEL PROCESAMIENTO DEL MODELO" 
-            self.log_repository.insertar(
-                LogProceso(
-                    uuid_log,
-                    "INFO",
-                    "Inicio del procesamiento del modelo",
-                    usuario,
-                    "comparar_textos",
-                    self.__class__.__name__,
-                    "OK"), schema, marker_position, conn
-                )
-            #--- LLAMAMOS AL MODELO 
-            resultado= self.modelo.comparar(textoA, textoB)
-
-            #-- Insert "PROCESAMIENTO DEL MODELO COMPLETADO"
-            self.log_repository.insertar(
-                LogProceso(
-                    uuid_log,
-                    "INFO",
-                    f"Procesamiento del modelo COMPLETADO, resultados(similitud:{resultado[0]}, Tokens textoA:{resultado[1]}, Tokens textoB:{resultado[2]})",
-                    usuario,
-                    "comparar_textos",
-                    self.__class__.__name__,
-                    "OK"), schema, marker_position, conn
-                )
-
-            ##################### PASO2: CONSTRUCCIÓN DE LA RESPUESTA AL USUARIO #########################
-            self.log_repository.insertar(
-                LogProceso(
-                    uuid_log,
-                    "INFO",
-                    "Generando respuesta para el usuario",
-                    usuario,
-                    "comparar_textos",
-                    self.__class__.__name__,
-                    "OK"), schema, marker_position, conn
-            )
-            self.logger.info("Inicio de la construcción de respuesta al usuario")
-
-            #--- Calculo de igualdad
-            iguales=self.calcular_igualdad(resultado[0],umbral)
-            
-            #--- Calculo De Porcentaje
-            self.logger.info("calculando el porcentaje ...")
-            porcentaje=int(resultado[0]*100)
-
-            #--- Calculo de sugerencia
-            if umbral1 is not None and umbral2 is not None:
-
-                sugerencia=self.determinar_sugerencia(resultado[0],float(umbral1),float(umbral2))
-                respuesta_modelo={
-                    "codigoMensaje":"00",
-                    "descripcionMensaje": "Procesamiento exitoso",
-                    "iguales": iguales,
-                    "sugerencia": sugerencia,
-                    "similitud": porcentaje
-                }
-
-            else:
-
-                respuesta_modelo={
-                    "codigoMensaje":"00",
-                    "descripcionMensaje": "Procesamiento exitoso",
-                    "iguales": iguales,
-                    "similitud": porcentaje
-                }
-
-            self.log_repository.insertar(
-                LogProceso(
-                    uuid_log,
-                    "INFO",
-                    "Respuesta generada exitosamente",
-                    usuario,
-                    "comparar_textos",
-                    self.__class__.__name__,
-                    "OK"), schema, marker_position, conn
-                )
-            self.logger.info("Respuesta generada exitosamente ")
-           
-            return respuesta_modelo
-
-        except Exception as error:
-            self.logger.error(error)
-            raise 
-
-    
-    def limpieza_datos(self, texto):
-
-        self.logger.info("realizando limpieza de datos ")
-
-        texto_limpio=re.sub(r'[\r\n\t]+',"", texto)
-        texto_limpio=" ".join(texto.split())
-
-        self.logger.info("limpieza de datos exitosa")
-
-        return texto_limpio
-    
-
-
-    def calcular_igualdad(self,resultado,umbral):
-
-        self.logger.info("Determinando igualdad de textos ...")
-        if resultado >= float(umbral):
-            iguales="si"     
-        else:
-            iguales="no"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mycompany</groupId>
+    <artifactId>prueba1</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
+        <exec.mainClass>prueba1.Prueba1</exec.mainClass>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
         
-        self.logger.info(f"Igualdad calculada:{iguales}")
-        return iguales
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.20.0</version>
+        </dependency>
         
-  
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+      
 
-    def determinar_sugerencia(self,resultado,umbral1,umbral2):
-        self.logger.info(f"Determinando sugerencia ...")
 
-        similitud = round(resultado, 6)
 
-        if similitud <= umbral1:
-            sugerencia = "I"
 
-        elif similitud <= umbral2:
-            sugerencia = "R"
 
-        else:
-            sugerencia = "A"
 
-        self.logger.info(f"sugerencia calculada:{sugerencia}")
-        return sugerencia
+
+
+
+
+
+                 
+              
