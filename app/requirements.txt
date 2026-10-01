@@ -1,55 +1,63 @@
+
+package prueba1;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Scanner;
-import static prueba1.Funciones.MayorEdad;
-import static prueba1.Funciones.calculadoranumeros;
-import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.net.InetSocketAddress;
+import modell.Calculadora;
+import modell.SolicitudPost;
+import modell.RespuestaPost;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class Prueba1 {
 
-    public static void main(String[] args) throws IOException {
-        
-        HttpServer servidor = HttpServer.create(new InetSocketAddress(8080),0);
-        
-        servidor.createContext("/calculadora", exchange -> {
-
-            if (!exchange.getRequestMethod().equals("POST")) {
-                exchange.sendResponseHeaders(405, -1);
-                exchange.close();
-            }
-        
-            String body=new String(
-                    exchange.getRequestBody().readAllBytes()
-            );
+public class Funciones {
+    public static boolean MayorEdad(int numero){
+        if (numero<=18){
+            return false;
             
-            String respuesta=calculadoranumeros(body);
-            byte[] datos = respuesta.getBytes();
-
-            exchange.getResponseHeaders().set("Content-Type", "application/json");
-            
-            exchange.sendResponseHeaders(200, datos.length);
-            exchange.getResponseBody().write(datos);
-            exchange.getResponseBody().close();
-
-        });
-        servidor.start();
-        System.out.println("Servidor abierto en el puesto 8080");
-        /*Scanner entrada=new Scanner(System.in);
-        System.out.println( "Ingrese su edad:");
-        int numero=entrada.nextInt();
-        
-        boolean valor=MayorEdad(numero);
-        
-        if (valor==true){
-           calculadoranumeros(entrada);
-     
+        }else{
+            return true;
         }
-        else {
-            System.out.println("Lo sentimos mucho, no puedes continuar dado que eres menor de edad");
-        }*/
-        
     }
     
+    public static String calculadoranumeros(String body) throws JsonProcessingException{
+        int opcion=0;
+        
+        ObjectMapper mapper= new ObjectMapper();
+        SolicitudPost solicitud =mapper.readValue(body,SolicitudPost.class);
+        int respuesta = 0;
+        String mensaje = null;
+        
+        if (solicitud.getOpcion()>=5){
+            mensaje="Opcion no valida ingresada";
+            respuesta=0;
+        }
+        
+        if(solicitud.getOpcion()<5){
+            mensaje="Operación valida";
+        }
+ 
+        if (solicitud.getOpcion()==1){
+                
+            respuesta =Calculadora.getsuma(solicitud.getNumero1(),solicitud.getNumero2());    
+        }
+        
+        if(solicitud.getOpcion()==2){
+            respuesta= Calculadora.getresta(solicitud.getNumero1(),solicitud.getNumero2()); 
+        }
+        
+        if(solicitud.getOpcion()==3){
+            respuesta= Calculadora.getmultiplicacion(solicitud.getNumero1(),solicitud.getNumero2());
+        }
+        
+        if(solicitud.getOpcion()==4){
+            respuesta= Calculadora.getdivision(solicitud.getNumero1(),solicitud.getNumero2());
+        }
+        
+        RespuestaPost resultado=new RespuestaPost(mensaje,respuesta);
+        
+        String resultadopost=mapper.writeValueAsString(resultado);
+        
+        return resultadopost;
+    }
 }
 
 
