@@ -1,28 +1,25 @@
 
-public class RespuestaPost {
-    private String mensaje;
-    private int resultado;
+package prueba1;
 
-    public RespuestaPost(String mensaje, int resultado) {
-        this.mensaje = mensaje;
-        this.resultado = resultado;
-    }
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import prueba1.Funciones;
 
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public int getResultado() {
-        return resultado;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
-
-    public void setResultado(int resultado) {
-        this.resultado = resultado;
-    }
+class Prueba1Test {
     
-    
+   @Test
+   public void ProbarMayorEdad() {
+       boolean respuesta = Funciones.MayorEdad(25);
+       assertTrue(respuesta);
+   }
+   
+   @Test
+   public void probarMenorEdad(){
+       boolean respuesta = Funciones.MayorEdad(13);
+       assertFalse(respuesta);
+   }
+   
 }
+
